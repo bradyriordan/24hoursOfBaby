@@ -1,24 +1,63 @@
-#container{
-  text-align:center;
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
+
+body{
+  background: url(../img/accessories/Background.svg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.container{
+  text-align: center;
   padding:50px;
 }
 
-.accessories{	
+.container__accessories{	
   transition:transform .2s
 }
 
-.accessories:hover {
-  cursor:pointer;
-  transform:scale(1.1);  
+.container__accessories:hover {
+  cursor :pointer;
+  transform: scale(1.1);  
 }
 
-#game-over{
-  display:none;
-  position:absolute;
-  top:0px;
-  left:0px;
-  width:100%;
-  height:100vh;
-  color:white;
-  background-color:#0486FF;
+.container__game-over{
+  display: none;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100vh;
+  color: white;
+  background-color: #40b5cd;
+}
+
+.container__game-over-container{
+  padding-top: 10%;
+}
+
+.container__game-over-button{
+  color: white;
+  font-size: 25px;
+  font-weight: bold;
+  padding: 15px;
+  background-color: #f4876c;
+  border: none;
+  border-radius: 3px;
+  transition: 0.3s;  
+}
+
+.container__game-over-button:hover{
+  cursor: pointer;
+  background-color: #f15f3b;
+}
+
+.container__text{	
+  font-size: 20px;
+}
+
+.container__game-over-text{	
+  font-size: 3em;
 }
