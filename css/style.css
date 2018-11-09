@@ -7,11 +7,12 @@ body{
   -o-background-size: cover;
   background-size: cover;
   font-family: 'Open Sans', sans-serif;
+  position: relative;
+  margin: 0;
 }
 
 .container{
-  text-align: center;
-  padding:50px;
+  text-align: center;  
 }
 
 .container__accessories{	
@@ -19,7 +20,7 @@ body{
 }
 
 .container__accessories:hover {
-  cursor :pointer;
+  cursor: pointer;
   transform: scale(1.1);  
 }
 
@@ -54,10 +55,91 @@ body{
   background-color: #f15f3b;
 }
 
+.container__score--main{
+	display: inline;
+    margin: 0 auto;
+	padding: 20px 15px 10px 15px;
+	background-color: #f4876c;
+	color: white;
+	border-radius: 0px 0px 10px 10px;
+}
+
 .container__text{	
   font-size: 20px;
+  display:inline;
+}
+  
+.container__text--game-time{
+	display:none;
+}
+
+.container__clock{
+  width: 250px;
+  height: 250px;
+  margin: 0 auto;
+  display: block;
+}
+
+.container__clock--minute{
+  animation: minutehand 2.5s infinite;
+  -webkit-animation: minutehand 2.5s infinite;  
+  transform-origin: 50% 50%;
+  transition-timing-function: linear;
+  -webkit-animation-timing-function: linear;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes minutehand {
+    0%   {transform: rotate(0deg); }
+    20%  {transform: rotate(72deg); }
+    40%  {transform: rotate(144deg); }
+    60% {transform: rotate(216deg); }
+	80% {transform: rotate(288deg); }
+	100% {transform: rotate(360deg); }
+}
+
+/* Standard syntax */
+@keyframes minutehand {
+    0%   {transform: rotate(0deg); }
+    20%  {transform: rotate(72deg); }
+    40%  {transform: rotate(144deg); }
+    60% {transform: rotate(216deg); }
+	80% {transform: rotate(288deg); }
+	100% {transform: rotate(360deg); }
+}
+
+.container__clock--hour{
+  animation: hourhand 30s infinite;
+  -webkit-animation: hourhand 30s infinite;  
+  transform-origin: 50% 50%;
+  transition-timing-function: linear;
+  -webkit-animation-timing-function: linear;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes hourhand {
+    0%   {transform: rotate(0deg); }
+    20%  {transform: rotate(72deg); }
+    40%  {transform: rotate(144deg); }
+    60% {transform: rotate(216deg); }
+	80% {transform: rotate(288deg); }
+	100% {transform: rotate(360deg); }
+}
+
+/* Standard syntax */
+@keyframes hourhand {
+    0%   {transform: rotate(0deg); }
+    20%  {transform: rotate(72deg); }
+    40%  {transform: rotate(144deg); }
+    60% {transform: rotate(216deg); }
+	80% {transform: rotate(288deg); }
+	100% {transform: rotate(360deg); }
 }
 
 .container__game-over-text{	
   font-size: 3em;
+}
+
+.container__text--gameover{
+	display: block;
 }

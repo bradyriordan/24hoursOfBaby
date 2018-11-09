@@ -1,3 +1,5 @@
+xAPIlaunched();
+
 var timer = 0;
 
 //  1 hour = 5000
@@ -7,7 +9,7 @@ var timer = 0;
 //  1 min  = 80
 
 var setup = {
-  gameTime: 1000,
+  gameTime: 60000,
   updateHunger: 2500,
   updateTired: 2500,
   updateUncomfortable: 2500,
@@ -19,10 +21,11 @@ var setup = {
   restart: function() {
     baby.fussy.calcFussiness("restart");
     timer = 0;
-    baby.hungry = 0;
+    baby.hungry = 5;
     baby.tired = 5;
     baby.uncomfortable = 5;
     baby.fed.lastFedTimestamp = 0;
+	baby.fed.feedCounter = 0;
     baby.rocked.lastRockedTimestamp = 0;
     baby.slept.lastSleptTimeStamp = 0;
     baby.pooped.dirtyDiaper = false;
@@ -36,9 +39,8 @@ var baby = {
   name: "",
   fussy: {
     fussiness: 0,
-    fussinessMultiplier: 0,
     calcFussiness: function(source) {
-      f = Math.floor(Math.random() * 5) + 6;
+      f = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
       if (this.fussiness == 0) {
         this.fussiness = f;
         this.fussinessMultiplier = this.fussiness / 10;
@@ -50,32 +52,32 @@ var baby = {
     updateFusiness: function(state) {
       switch (state) {
         case "smile":
-          if (this.fussinessMultiplier >= 0.5 && this.fussinessMultiplier < 1) {
-            this.fussinessMultiplier += 0.1;
+          if (this.fussiness <= 10 && this.fussiness > 0) {
+            this.fussiness -=2
             score.fussy.incrementScore("smile");
           }
           break;
         case "content":
-          if (this.fussinessMultiplier >= 0.5 && this.fussinessMultiplier < 1) {
-            this.fussinessMultiplier += 0.05;
+          if (this.fussiness <= 10 && this.fussiness > 0) {
+            this.fussiness--
             score.fussy.incrementScore("content");
           }
           break;
         case "cry":
-          if (this.fussinessMultiplier >= 0.6) {
-            this.fussinessMultiplier -= 0.05;
-            score.fussy.incrementScore("cry");
+          if (this.fussiness < 10 && this.fussiness > 0) {            
+            this.fussiness++
+			score.fussy.incrementScore("cry");
           }
           break;
         case "wail":
-          if (this.fussinessMultiplier >= 0.6) {
-            this.fussinessMultiplier -= 0.1;
+          if (this.fussiness < 10 && this.fussiness > 0) {
+            this.fussiness++
             score.fussy.incrementScore("wail");
           }
           break;
         case "sleep":
-          if (this.fussinessMultiplier >= 0.5 && this.fussinessMultiplier < 0.95) {
-            this.fussinessMultiplier += 0.05;
+          if (this.fussiness <= 10 && this.fussiness > 0) {
+            this.fussiness -=2
             score.fussy.incrementScore("sleep");
           }
           break;
@@ -89,13 +91,44 @@ var baby = {
   tired: 5,
   uncomfortable: 5,
   fed: {
+	feedActions: function () {
+		baby.hungry -= 2
+		baby.fed.lastFedTimestamp = timer;
+		baby.fed.feedCounter = 0;
+		babyActions.sleep();
+		babyActions.poop('feed');
+	},
+	feedCounter: 0,
+	toFeed: function() {
+		if (this.feedCounter < 10){
+		  this.feedCounter++
+		  parentActions.feed(this.feedCounter);
+		 } else if (this.feedCounter == 10) {		  
+		  parentActions.feed(this.feedCounter);
+		}
+	},
     lastFedTimestamp: 0,
     lastFed: function() {
       return timer - this.lastFedTimestamp
     },
   },
   rocked: {
-    lastRockedTimestamp: 0,
+    rockActions: function (){
+	  baby.uncomfortable -= 2
+	  this.rockCounter = 0;
+	  baby.rocked.lastRockedTimestamp = timer;
+      babyActions.sleep();
+	},
+	rockCounter: 0,
+	toRock: function() {
+		if (this.rockCounter < 10){
+		  this.rockCounter++
+		  parentActions.rock(this.rockCounter);
+		 } else if (this.rockCounter == 10) {		  
+		  parentActions.rock(this.rockCounter);
+		}
+	},
+	lastRockedTimestamp: 0,
     lastRocked: function() {
       return timer - this.lastRockedTimestamp
     }
@@ -168,19 +201,19 @@ var babyActions = {
 }
 
 var parentActions = {
-  feed: function() {
-    if (baby.hungry <= 6 && baby.hungry > 0) {
-      baby.hungry = baby.hungry - (1 * baby.fussy.fussinessMultiplier);
-      baby.fed.lastFedTimestamp = timer;
-      babyActions.sleep();
-      babyActions.poop('feed');
-    }
-  },
-  rock: function() {
+  feed: function(counter) {    
+	if (baby.hungry <= 6 && baby.hungry > 0) {	  
+	  if (counter == baby.fussy.fussiness || counter == 10){       
+        baby.fed.feedActions();	         
+	  }
+     } 	
+    }, 
+  
+  rock: function(counter) {
     if (baby.uncomfortable <= 6 && baby.uncomfortable > 0) {
-      baby.uncomfortable = baby.uncomfortable - (1 * baby.fussy.fussinessMultiplier);
-      baby.rocked.lastRockedTimestamp = timer;
-      babyActions.sleep();
+      	if (counter == baby.fussy.fussiness || counter == 10){
+		baby.rocked.rockActions();	         
+	  }
     }
   },
   change: function() {
@@ -190,6 +223,8 @@ var parentActions = {
     }
   }
 }
+
+
 
 var babyState = {
   smile: function() {
@@ -214,21 +249,22 @@ var babyState = {
   sleep: function() {
     document.getElementById('baby-img').setAttribute("src", "img/baby/sleep.gif");
     baby.state = "sleep";
-
   }
 }
 
 setInterval(updateStates, 100);
 
 function updateStates() {
-  if ((baby.hungry >= 4 || baby.uncomfortable >= 4) && baby.state != "wail") {
+  if ((baby.hungry == 5 || baby.uncomfortable == 5) && baby.state != "wail") {
     babyState.wail();
-  } else if (((baby.hungry >= 3 && baby.hungry < 4) || (baby.uncomfortable >= 3 && baby.uncomfortable < 4)) && baby.pooped.dirtyDiaper == false && baby.state != "cry") {
+  } else if ((baby.hungry == 4 || baby.uncomfortable == 4) && (baby.pooped.dirtyDiaper == false && baby.state != "cry")) {
     babyState.cry();
-  } else if (((baby.hungry >= 2 && baby.hungry < 3) || (baby.uncomfortable >= 2 && baby.uncomfortable < 3)) && baby.pooped.dirtyDiaper == false && baby.state != "content") {
+  } else if ((baby.hungry == 3 || baby.uncomfortable == 3) && (baby.pooped.dirtyDiaper == false && baby.state != "content")) {
     babyState.content();
-  } else if (((baby.hungry >= 1 && baby.hungry < 2) || (baby.uncomfortable >= 1 && baby.uncomfortable < 2)) && baby.pooped.dirtyDiaper == false && baby.state != "smile") {
+  } else if ((baby.hungry == 2 || baby.uncomfortable == 2) && (baby.pooped.dirtyDiaper == false && baby.state != "smile")) {
     babyState.smile();
+  } else {
+	//
   }
 }
 
@@ -241,8 +277,10 @@ function automatic() {
   timer += 100;
   document.getElementById('game-time').innerHTML = timer / 1000;
 
-  baby.fussy.calcFussiness();
-  document.getElementById('fussiness').innerHTML = Math.round(Math.abs((baby.fussy.fussinessMultiplier - 1) * 10) * 100) / 100;
+  baby.fussy.calcFussiness();  
+  document.getElementsByClassName('hungry')[0].innerHTML = baby.hungry;
+  document.getElementsByClassName('uncomfortable')[0].innerHTML = baby.uncomfortable;
+  document.getElementsByClassName('rawFusiness')[0].innerHTML = baby.fussy.fussiness;
 
   setup.gameOver();
 }
