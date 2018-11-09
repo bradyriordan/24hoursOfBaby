@@ -42,11 +42,9 @@ var baby = {
     calcFussiness: function(source) {
       f = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
       if (this.fussiness == 0) {
-        this.fussiness = f;
-        this.fussinessMultiplier = this.fussiness / 10;
+        this.fussiness = f;        
       } else if (source == "restart") {
-        this.fussiness = f;
-        this.fussinessMultiplier = this.fussiness / 10;
+        this.fussiness = f;        
       }
     },
     updateFusiness: function(state) {
@@ -86,7 +84,7 @@ var baby = {
       }
     },
   },
-  state: "wail",
+  state: "",
   hungry: 5,
   tired: 5,
   uncomfortable: 5,
@@ -255,13 +253,15 @@ var babyState = {
 setInterval(updateStates, 100);
 
 function updateStates() {
-  if ((baby.hungry == 5 || baby.uncomfortable == 5) && baby.state != "wail") {
+  if (baby.pooped.dirtyDiaper == true) {
     babyState.wail();
-  } else if ((baby.hungry == 4 || baby.uncomfortable == 4) && (baby.pooped.dirtyDiaper == false && baby.state != "cry")) {
+  } else if (baby.hungry == 5 || baby.uncomfortable == 5) {
+    babyState.wail();
+  } else if (baby.hungry == 4 || baby.uncomfortable == 4) {
     babyState.cry();
-  } else if ((baby.hungry == 3 || baby.uncomfortable == 3) && (baby.pooped.dirtyDiaper == false && baby.state != "content")) {
+  } else if (baby.hungry == 3 || baby.uncomfortable == 3) {
     babyState.content();
-  } else if ((baby.hungry == 2 || baby.uncomfortable == 2) && (baby.pooped.dirtyDiaper == false && baby.state != "smile")) {
+  } else if (baby.hungry == 2 || baby.uncomfortable == 2) {
     babyState.smile();
   } else {
 	//
@@ -275,8 +275,7 @@ function automatic() {
   babyActions.poop();
 
   timer += 100;
-  document.getElementById('game-time').innerHTML = timer / 1000;
-
+  
   baby.fussy.calcFussiness();  
   document.getElementsByClassName('hungry')[0].innerHTML = baby.hungry;
   document.getElementsByClassName('uncomfortable')[0].innerHTML = baby.uncomfortable;
