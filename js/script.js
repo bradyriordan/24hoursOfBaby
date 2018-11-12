@@ -24,9 +24,9 @@ var setup = {
     baby.hungry = 5;
     baby.tired = 5;
     baby.uncomfortable = 5;
-    baby.fed.lastFedTimestamp = 0;
-	baby.fed.feedCounter = 0;
-    baby.rocked.lastRockedTimestamp = 0;
+    parentActions.lastFedTimestamp = 0;
+	parentActions.feedCounter = 0;
+    parentActions.lastRockedTimestamp = 0;
     baby.slept.lastSleptTimeStamp = 0;
     baby.pooped.dirtyDiaper = false;
     baby.pooped.poopTimerTimestamp = 0;
@@ -87,50 +87,7 @@ var baby = {
   state: "",
   hungry: 5,
   tired: 5,
-  uncomfortable: 5,
-  fed: {
-	feedActions: function () {
-		baby.hungry -= 2
-		baby.fed.lastFedTimestamp = timer;
-		baby.fed.feedCounter = 0;
-		babyActions.sleep();
-		babyActions.poop('feed');
-	},
-	feedCounter: 0,
-	toFeed: function() {
-		if (this.feedCounter < 10){
-		  this.feedCounter++
-		  parentActions.feed(this.feedCounter);
-		 } else if (this.feedCounter == 10) {		  
-		  parentActions.feed(this.feedCounter);
-		}
-	},
-    lastFedTimestamp: 0,
-    lastFed: function() {
-      return timer - this.lastFedTimestamp
-    },
-  },
-  rocked: {
-    rockActions: function (){
-	  baby.uncomfortable -= 2
-	  this.rockCounter = 0;
-	  baby.rocked.lastRockedTimestamp = timer;
-      babyActions.sleep();
-	},
-	rockCounter: 0,
-	toRock: function() {
-		if (this.rockCounter < 10){
-		  this.rockCounter++
-		  parentActions.rock(this.rockCounter);
-		 } else if (this.rockCounter == 10) {		  
-		  parentActions.rock(this.rockCounter);
-		}
-	},
-	lastRockedTimestamp: 0,
-    lastRocked: function() {
-      return timer - this.lastRockedTimestamp
-    }
-  },
+  uncomfortable: 5,  
   slept: {
     lastSleptTimeStamp: 0,
     lastSlept: function() {
@@ -172,7 +129,7 @@ function updateUncomfortable() {
 
 var babyActions = {
   sleep: function() {
-    if (baby.uncomfortable < 2 && baby.hungry < 2 && baby.rocked.lastRocked() < 2000 && baby.slept.lastSlept() > 10000 && baby.pooped.dirtyDiaper == false && baby.state != "sleep") {
+    if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 2000 && baby.slept.lastSlept() > 10000 && baby.pooped.dirtyDiaper == false && baby.state != "sleep") {
       babyState.sleep();
       baby.state = "sleep";
       baby.slept.lastSleptTimeStamp = timer;
@@ -191,7 +148,7 @@ var babyActions = {
         }
       }
     } else {
-      if (baby.pooped.poopTimer() > 10000) {
+      if (baby.pooped.poopTimer() > 1000000) {
         baby.pooped.dirtyDiaper = true
       }
     }
@@ -202,25 +159,68 @@ var parentActions = {
   feed: function(counter) {    
 	if (baby.hungry <= 6 && baby.hungry > 0) {	  
 	  if (counter == baby.fussy.fussiness || counter == 10){       
-        baby.fed.feedActions();	         
+        this.feedActions();	         
 	  }
-     } 	
-    }, 
+     }
+	
+    },	
+	feedActions: function () {
+		baby.hungry -= 2
+		this.lastFedTimestamp = timer;
+		this.feedCounter = 0;
+		babyActions.sleep();
+		babyActions.poop('feed');
+	},
+	feedCounter: 0,
+	toFeed: function() {
+		if (this.feedCounter < 10){
+		  this.feedCounter++
+		  this.feed(this.feedCounter);
+		 } else if (this.feedCounter == 10) {		  
+		  this.feed(this.feedCounter);
+		}
+	},
+    lastFedTimestamp: 0,
+    lastFed: function() {
+      return timer - this.lastFedTimestamp
+    },
+  
   
   rock: function(counter) {
     if (baby.uncomfortable <= 6 && baby.uncomfortable > 0) {
       	if (counter == baby.fussy.fussiness || counter == 10){
-		baby.rocked.rockActions();	         
+		this.rockActions();	         
 	  }
     }
-  },
-  change: function() {
-    if (baby.pooped.dirtyDiaper == true) {
-      baby.pooped.dirtyDiaper = false;
+  },  
+  rockActions: function (){
+	  baby.uncomfortable -= 2
+	  this.rockCounter = 0;
+	  this.lastRockedTimestamp = timer;
+      babyActions.sleep();
+	},
+	rockCounter: 0,
+	toRock: function() {
+		if (this.rockCounter < 10){
+		  this.rockCounter++
+		  this.rock(this.rockCounter);
+		 } else if (this.rockCounter == 10) {		  
+		  this.rock(this.rockCounter);
+		}
+	},
+	lastRockedTimestamp: 0,
+    lastRocked: function() {
+      return timer - this.lastRockedTimestamp
+    },  
+  
+  change: function() {	
+	if (baby.pooped.dirtyDiaper == true) {      
+	  baby.pooped.dirtyDiaper = false;	  
       babyActions.sleep();
     }
   }
 }
+
 
 
 
@@ -280,6 +280,7 @@ function automatic() {
   document.getElementsByClassName('hungry')[0].innerHTML = baby.hungry;
   document.getElementsByClassName('uncomfortable')[0].innerHTML = baby.uncomfortable;
   document.getElementsByClassName('rawFusiness')[0].innerHTML = baby.fussy.fussiness;
+  document.getElementsByClassName('dirtydiaper')[0].innerHTML = baby.pooped.dirtyDiaper;
 
   setup.gameOver();
 }
