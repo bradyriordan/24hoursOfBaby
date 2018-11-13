@@ -24,8 +24,19 @@ body{
   transform: scale(1.1);  
 }
 
-.container__game-over{
+.container__start-finish{
   display: none;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100vh;
+  color: white;
+  background-color: #40b5cd;
+}
+
+.container__start{
+  display: block;
   position: absolute;
   top: 0px;
   left: 0px;
@@ -39,7 +50,7 @@ body{
   padding-top: 10%;
 }
 
-.container__game-over-button{
+.container__start-finish-button{
   color: white;
   font-size: 25px;
   font-weight: bold;
@@ -50,7 +61,7 @@ body{
   transition: 0.3s;  
 }
 
-.container__game-over-button:hover{
+.container__start-finish-button:hover{
   cursor: pointer;
   background-color: #f15f3b;
 }
@@ -86,6 +97,15 @@ body{
   transform-origin: 50% 50%;
   transition-timing-function: linear;
   -webkit-animation-timing-function: linear;
+}
+
+.container__text-input{
+  padding: 20px;
+  width: 250px;
+  border-radius: 5px;
+  border: none;
+  font-size: 25px;
+  margin: 50px 0px 50px 0px;
 }
 
 /* Safari 4.0 - 8.0 */

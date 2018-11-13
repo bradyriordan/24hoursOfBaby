@@ -13,6 +13,18 @@
   </head>
   <body>
   <div class="container">
+	<div class="container__start">
+	  <div id="container__start-game-container">
+	    <h1>Welcome!</h1>
+		<label for="username"></label>
+		<input type="text" id="username" class="container__text-input" name="username" required minlength="4" placeholder="Enter username" maxlength="20" size="10">
+	    <h1><u>RULES TO LIVE BY</u></h1>
+		<h1>Feed the baby when it's hungry (not too much, he will barf!)</h1>
+		<h1>Change the baby when when his diaper is dirty</h1>
+		<h1>Rock the baby when he's uncomfortable (not too much, he will get dizzy!)</h1>
+	  <button class="container__start-finish-button">Start!</button>
+	  </div>
+	</div>
 	<div class="container__score--main">
 	  <h3 class="container__text">Score: <span class="sleep-score">0</span>&nbsp;|</h3>		  
 	  <h3 class="container__text">Hungry: <span class="hungry">0</span>&nbsp;|</h3>	
@@ -61,11 +73,11 @@
 	<img onclick="parentActions.toRock()" id="soother" class="container__accessories" src="img/accessories/soother.png" width="auto" height="90px" alt="soother"/>
 	<img onclick="parentActions.change()" id="diaper" class="container__accessories" src="img/accessories/diaper.png" width="auto" height="90px" alt="diaper"/>	
 
-	<div class="container__game-over">
-	  <div id="container__game-over-container">
+	<div class="container__start-finish">
+	  <div id="container__start-finish-container">
 	    <h1 class="container__game-over-text">Game over!</h1>
 	    <h3 class="container__text container__text--gameover">Score: <span class="sleep-score"></span></h3>
-	  <button class="container__game-over-button" onclick="setup.restart();">Restart</button>
+	  <button class="container__start-finish-button" onclick="setup.restart();">Restart</button>
 	  </div>
 	</div>
   <div/>

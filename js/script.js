@@ -9,13 +9,14 @@ var timer = 0;
 //  1 min  = 80
 
 var setup = {
-  gameTime: 60000,
+  gameTime: 6000,
   updateHunger: 2500,
   updateTired: 2500,
   updateUncomfortable: 2500,
   gameOver: function() {
     if (timer > this.gameTime) {
-      document.getElementsByClassName('container__game-over')[0].style.display = "block";
+      document.getElementsByClassName('container__start-finish')[0].style.display = "block";
+	  //xAPIcompleted(rawScore);
     }
   },
   restart: function() {
@@ -31,7 +32,7 @@ var setup = {
     baby.pooped.dirtyDiaper = false;
     baby.pooped.poopTimerTimestamp = 0;
     score.resetScore();
-    document.getElementsByClassName('container__game-over')[0].style.display = "none";
+    document.getElementsByClassName('container__start-finish')[1].style.display = "none";
   }
 }
 
@@ -290,6 +291,7 @@ function automatic() {
 }
 
 var score = {
+  rawScore: this.fussy.score,
   sleep: {
     score: 0,
     incrementScore: function() {
