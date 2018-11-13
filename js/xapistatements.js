@@ -3,7 +3,7 @@ var conf = {
   "auth": "Basic " + toBase64("495dd7fd0d382fc953a7395934c1fb9c:b35ced3cfc78a45da2ca50f1a090e958")
 };
 
-  ADL.XAPIWrapper.changeConfig(conf);
+ADL.XAPIWrapper.changeConfig(conf);
 
 function xAPIlaunched() {
   //define the xapi statement being sent  

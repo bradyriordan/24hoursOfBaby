@@ -47,11 +47,12 @@ var baby = {
         this.fussiness = f;        
       }
     },
-    updateFusiness: function(state) {
-      switch (state) {
+    updateFusiness: function(state, currentState) {      
+	  if(currentState != state){
+	  switch (state) {
         case "smile":
           if (this.fussiness <= 10 && this.fussiness > 0) {
-            this.fussiness -=2
+            this.fussiness -=1
             score.fussy.incrementScore("smile");
           }
           break;
@@ -82,6 +83,7 @@ var baby = {
         default:
 
       }
+	}	  
     },
   },
   state: "",
@@ -132,8 +134,7 @@ var babyActions = {
     if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 2000 && baby.slept.lastSlept() > 10000 && baby.pooped.dirtyDiaper == false && baby.state != "sleep") {
       babyState.sleep();
       baby.state = "sleep";
-      baby.slept.lastSleptTimeStamp = timer;
-      baby.fussy.updateFusiness("sleep");
+      baby.slept.lastSleptTimeStamp = timer;      
       score.sleep.incrementScore();
     }
   },
@@ -224,29 +225,31 @@ var parentActions = {
 
 
 
-var babyState = {
+var babyState = {  
   smile: function() {
     document.getElementById('baby-img').setAttribute("src", "img/baby/smile.png");
-    baby.state = "smile";
+    baby.fussy.updateFusiness("smile", baby.state);
+	baby.state = "smile";	
   },
   content: function() {
     document.getElementById('baby-img').setAttribute("src", "img/baby/content.png");
-    baby.state = "content";
-    baby.fussy.updateFusiness("content");
+    baby.fussy.updateFusiness("content", baby.state);
+	baby.state = "content";    
   },
   cry: function() {
     document.getElementById('baby-img').setAttribute("src", "img/baby/cry.gif");
-    baby.state = "cry";
-    baby.fussy.updateFusiness("cry");
+    baby.fussy.updateFusiness("cry", baby.state);
+	baby.state = "cry";    
   },
   wail: function() {
     document.getElementById('baby-img').setAttribute("src", "img/baby/wail.gif");
-    baby.state = "wail";
-    baby.fussy.updateFusiness("wail");
+    baby.fussy.updateFusiness("wail", baby.state);
+	baby.state = "wail";    
   },
   sleep: function() {
     document.getElementById('baby-img').setAttribute("src", "img/baby/sleep.gif");
-    baby.state = "sleep";
+    baby.fussy.updateFusiness("sleep", baby.state);
+	baby.state = "sleep";	
   }
 }
 
@@ -254,7 +257,7 @@ setInterval(updateStates, 100);
 
 function updateStates() {
   if (baby.pooped.dirtyDiaper == true) {
-    babyState.wail();
+    babyState.wail();    
   } else if (baby.hungry == 5 || baby.uncomfortable == 5) {
     babyState.wail();
   } else if (baby.hungry == 4 || baby.uncomfortable == 4) {
@@ -290,7 +293,7 @@ var score = {
   sleep: {
     score: 0,
     incrementScore: function() {
-      this.score++;
+      this.score += 200;
       score.displayScore();
     }
   },
@@ -299,23 +302,23 @@ var score = {
     incrementScore: function(state) {
       switch (state) {
         case "smile":
-          this.score += 0.1;
+          this.score += 1000;
           score.displayScore();
           break;
         case "content":
-          this.score += 0.05;
+          this.score += 300;
           score.displayScore();
           break;
         case "cry":
-          this.score -= 0.05;
+          this.score -= 200;
           score.displayScore();
           break;
         case "wail":
-          this.score -= 0.1;
+          this.score -= 1000;
           score.displayScore();
           break;
         case "sleep":
-          this.score += 0.1;
+          this.score += 1000;
           score.displayScore();
           break;
         default:
