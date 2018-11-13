@@ -138,18 +138,18 @@ var babyActions = {
     }
   },
   poop: function(increment) {
-    if (increment == 'feed') {
-      if (baby.pooped.poopTimerTimestamp == 0) {
-        baby.pooped.poopTimerTimestamp = timer
-      } else {
-        if (baby.pooped.poopTimer() > 10000) {
+    if (increment == 'feed') {     
+        if(baby.pooped.poopTimerTimestamp == 0){
+		  baby.pooped.poopTimerTimestamp = timer;
+		}
+		if(baby.pooped.poopTimer() > 10000) {
           baby.pooped.dirtyDiaper = true;
           baby.pooped.poopTimerTimestamp = timer;
-        }
-      }
+        }      
     } else {
-      if (baby.pooped.poopTimer() > 1000000) {
+      if (baby.pooped.poopTimer() > 10000) {
         baby.pooped.dirtyDiaper = true
+		baby.pooped.poopTimerTimestamp = timer;
       }
     }
   }
@@ -281,6 +281,7 @@ function automatic() {
   document.getElementsByClassName('uncomfortable')[0].innerHTML = baby.uncomfortable;
   document.getElementsByClassName('rawFusiness')[0].innerHTML = baby.fussy.fussiness;
   document.getElementsByClassName('dirtydiaper')[0].innerHTML = baby.pooped.dirtyDiaper;
+  document.getElementsByClassName('state')[0].innerHTML = baby.state;
 
   setup.gameOver();
 }
