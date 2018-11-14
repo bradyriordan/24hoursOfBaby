@@ -9,7 +9,7 @@ function xAPIlaunched(parentName) {
   //define the xapi statement being sent  
   var statement = {
     "actor": {
-      "mbox": "mailto:24hoursofbaby@user.com",
+      "mbox": "mailto:24hoursofbaby@"+ parentName +".com",
       "name": parentName,
       "objectType": "Agent"
     },
@@ -41,7 +41,7 @@ function xAPIcompleted(parentName, rawScore) {
   //define the xapi statement being sent  
   var statement = {
   "actor": {
-      "mbox": "mailto:24hoursofbaby@user.com",
+      "mbox": "mailto:24hoursofbaby@"+ parentName +".com",
       "name": parentName,
       "objectType": "Agent"
     },
@@ -65,13 +65,9 @@ function xAPIcompleted(parentName, rawScore) {
       "objectType": "Activity"
     },  
   "result": {
-    "score": {
-	  "scaled": 1,
-	  "min": 0,
-	  "max": 100,
-	  "raw": rawScore
-	  },
-	 "success": true,
+     "score": {
+	   "raw": rawScore
+	 },
 	 "completion": true		
   }  
    
