@@ -74,12 +74,21 @@
 	<img onclick="parentActions.toRock()" id="soother" class="container__accessories" src="img/accessories/soother.png" width="auto" height="90px" alt="soother"/>
 	<img onclick="parentActions.change()" id="diaper" class="container__accessories" src="img/accessories/diaper.png" width="auto" height="90px" alt="diaper"/>	
 
-	<div class="container__start-finish">
-	  <div id="container__start-finish-container">
+	<div class="container__start-finish">	  
 	    <h1 class="container__game-over-text">Game over!</h1>
-	    <h3 class="container__text container__text--gameover">Score: <span class="sleep-score"></span></h3>
+	    <h3 class="container__text container__text--gameover">YOUR SCORE: <span class="sleep-score"></span></h3>
+		<div class="container__table">
+		  <table class="container__table-high-score">
+		  <tr>
+		    <th>Username</th>
+			<th>Score</th>
+		  </tr>
+		  <tbody class="container__table-high-score-body">
+		  </tbody>
+		  </table>
+		</div>
 	  <button class="container__start-finish-button" onclick="setup.restart();">Restart</button>
-	  </div>
+	  
 	</div>
   <div/>
   </body>

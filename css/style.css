@@ -32,7 +32,14 @@ body{
   width: 100%;
   height: 100vh;
   color: white;
-  background-color: #40b5cd;
+  background-color: #40b5cd;  
+}
+
+.container__table-high-score{
+  margin: 0 auto;
+  text-align: left;
+  min-width: 220px;
+  padding: 30px;
 }
 
 .container__start{

@@ -41,7 +41,13 @@ var setup = {
     baby.pooped.poopTimerTimestamp = 0;
     score.resetScore();
     document.getElementsByClassName('container__start-finish')[0].style.display = "none";
-  }
+	table = document.getElementsByClassName('container__table-high-score')[0];	
+	var rows = table.rows;
+    var i = rows.length;
+    while (--i) {
+      rows[i].parentNode.removeChild(rows[i]);     
+    }
+    }
 }
 
 var baby = {
