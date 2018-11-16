@@ -8,7 +8,7 @@ var timer = 0;
 
 var setup = {
   gameState: "pause",
-  gameTime: 60000,
+  gameTime: 30000,
   updateHunger: 2500,
   updateTired: 2500,
   updateUncomfortable: 2500,
@@ -56,7 +56,7 @@ var baby = {
   fussy: {
     fussiness: 0,
     calcFussiness: function (source) {
-      f = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+      f = Math.floor(Math.random() * (8 - 1 + 1)) + 1;
       if (this.fussiness == 0) {
         this.fussiness = f;
       } else if (source == "restart") {
@@ -78,19 +78,19 @@ var baby = {
           case "content":
             if (this.fussiness <= 10 && this.fussiness >= -1) {
               this.fussiness--
-                score.fussy.incrementScore("content");
+              score.fussy.incrementScore("content");
             }
             break;
           case "cry":
             if (this.fussiness < 10 && this.fussiness > 0) {
               this.fussiness++
-                score.fussy.incrementScore("cry");
+              score.fussy.incrementScore("cry");
             }
             break;
           case "wail":
             if (this.fussiness < 10 && this.fussiness > 0) {
               this.fussiness++
-                score.fussy.incrementScore("wail");
+              score.fussy.incrementScore("wail");
             }
             break;
           case "sleep":
@@ -333,17 +333,23 @@ var score = {
           score.displayScore();
 		  break;
 		case "cry":
-		  this.score -= 5;
-          score.displayScore();
+		  if(score.calcScore() >= 5){
+		    this.score -= 5;
+            score.displayScore();
+		  }
 		  break;
 		case "wail":
-		  this.score -= 10;
-          score.displayScore();
+		  if(score.calcScore() >= 10){
+		    this.score -= 10;
+            score.displayScore();
+		  }
+		  break;
+		case "sleep":		  
+		    this.score += 50;
+            score.displayScore();		 
 		  break;
 		default:		
-	  }
-	  this.score += 10;
-      score.displayScore();
+	  }	  
 	}
   },
   sleep: {
@@ -366,12 +372,16 @@ var score = {
           score.displayScore();
           break;
         case "cry":
-          this.score -= 200;
-          score.displayScore();
+          if(score.calcScore() >= 200){
+		    this.score -= 200;
+            score.displayScore();
+		   }
           break;
         case "wail":
-          this.score -= 1000;
-          score.displayScore();
+          if(score.calcScore() >= 1000){
+		    this.score -= 1000;
+            score.displayScore();
+		   }
           break;
         case "sleep":
           this.score += 1000;
@@ -384,6 +394,7 @@ var score = {
   resetScore: function () {
     this.sleep.score = 0;
     this.fussy.score = 0;
+	this.stateScore.score = 0;
     score.displayScore();
   },
   displayScore: function () {

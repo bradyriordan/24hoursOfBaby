@@ -38,7 +38,7 @@ body{
 .container__table-high-score{
   margin: 0 auto;
   text-align: left;
-  min-width: 300px;
+  min-width: 500px;
   padding: 30px;
   font-size: 1.5em;
 }
