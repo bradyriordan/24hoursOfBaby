@@ -5,9 +5,8 @@ function showLeaderBoard(parentName, rawScore){
   scores = ADL.XAPIWrapper.getStatements({"verb":"http://adlnet.gov/expapi/verbs/completed"})
   
   highScores = [];
-  highScores.push([parentName, rawScore])
   
-  for(i=0; i < scores.statements.length; i++){
+ for(i=0; i < scores.statements.length; i++){
     date = new Date (scores.statements[i].timestamp);
 	date = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
 	highScores.push([scores.statements[i].result.score.raw, scores.statements[i].actor.name, date]);

@@ -8,7 +8,7 @@ var timer = 0;
 
 var setup = {
   gameState: "pause",
-  gameTime: 30000,
+  gameTime: 60000,
   updateHunger: 2500,
   updateTired: 2500,
   updateUncomfortable: 2500,
@@ -34,12 +34,12 @@ var setup = {
     baby.tired = 5;
     baby.uncomfortable = 5;
     parentActions.lastFedTimestamp = 0;
-    parentActions.feedCounter = 0;
+    parentActions.clearCounters();
     parentActions.lastRockedTimestamp = 0;
     baby.slept.lastSleptTimeStamp = 0;
     baby.pooped.dirtyDiaper = false;
     baby.pooped.poopTimerTimestamp = 0;
-    score.resetScore();
+    score.resetScore();	
 	xAPIlaunched(baby.parentName);
     document.getElementsByClassName('container__start-finish')[0].style.display = "none";
 	table = document.getElementsByClassName('container__table-high-score')[0];	
@@ -63,38 +63,38 @@ var baby = {
         this.fussiness = f;
       }
     },
-    updateFusiness: function (state, currentState) {
+    updateFussiness: function (state, currentState) {
       if (currentState != state) {
 	    if(currentState == "wail" && state == "cry"){
 			this.fussiness -=2
 		}
         switch (state) {
           case "smile":
-            if (this.fussiness <= 10 && this.fussiness >= -1) {
-              this.fussiness -= 1
+            if (this.fussiness <= 10 && this.fussiness >= 2) {
+              this.fussiness -=2
               score.fussy.incrementScore("smile");
             }
             break;
           case "content":
-            if (this.fussiness <= 10 && this.fussiness >= -1) {
+            if (this.fussiness <= 10 && this.fussiness >= 1) {
               this.fussiness--
               score.fussy.incrementScore("content");
             }
             break;
           case "cry":
-            if (this.fussiness < 10 && this.fussiness > 0) {
+            if (this.fussiness < 10) {
               this.fussiness++
               score.fussy.incrementScore("cry");
             }
             break;
           case "wail":
-            if (this.fussiness < 10 && this.fussiness > 0) {
+            if (this.fussiness < 10 && currentState != "wail") {
               this.fussiness++
               score.fussy.incrementScore("wail");
             }
             break;
           case "sleep":
-            if (this.fussiness <= 10 && this.fussiness > 1) {
+            if (this.fussiness <= 10 && this.fussiness >= 2) {
               this.fussiness -= 2
               score.fussy.incrementScore("sleep");
             }
@@ -148,7 +148,7 @@ function updateUncomfortable() {
 }
 
 
-var babyActions = {
+var babyActions = {  
   sleep: function () {
     if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 2000 && baby.slept.lastSlept() > 10000 && baby.pooped.dirtyDiaper == false && baby.state != "sleep") {
       babyState.sleep();
@@ -176,6 +176,10 @@ var babyActions = {
 }
 
 var parentActions = {
+  clearCounters: function(){
+	this.feedCounter = 0;
+	this.rockCounter = 0;
+  },
   feed: function (counter) {
     if (baby.hungry <= 6 && baby.hungry > 0) {
       if (counter == baby.fussy.fussiness || counter == 10) {
@@ -195,7 +199,7 @@ var parentActions = {
   toFeed: function () {
     if (this.feedCounter < 10) {
       this.feedCounter++
-        this.feed(this.feedCounter);
+      this.feed(this.feedCounter);
     } else if (this.feedCounter == 10) {
       this.feed(this.feedCounter);
     }
@@ -246,27 +250,28 @@ var babyState = {
   
 	  smile: function () {
 		document.getElementById('baby-img').setAttribute("src", "img/baby/smile.png");
-		baby.fussy.updateFusiness("smile", baby.state);
+		baby.fussy.updateFussiness("smile", baby.state);
 		baby.state = "smile";
 	  },
 	  content: function () {
 		document.getElementById('baby-img').setAttribute("src", "img/baby/content.png");
-		baby.fussy.updateFusiness("content", baby.state);
+		baby.fussy.updateFussiness("content", baby.state);
 		baby.state = "content";
 	  },
 	  cry: function () {
 		document.getElementById('baby-img').setAttribute("src", "img/baby/cry.gif");
-		baby.fussy.updateFusiness("cry", baby.state);
+		baby.fussy.updateFussiness("cry", baby.state);
 		baby.state = "cry";
 	  },
 	  wail: function () {
 		document.getElementById('baby-img').setAttribute("src", "img/baby/wail.gif");
-		baby.fussy.updateFusiness("wail", baby.state);
+		baby.fussy.updateFussiness("wail", baby.state);
 		baby.state = "wail";
 	  },
 	  sleep: function () {
 		document.getElementById('baby-img').setAttribute("src", "img/baby/sleep.gif");
-		baby.fussy.updateFusiness("sleep", baby.state);
+		parentActions.clearCounters();
+		baby.fussy.updateFussiness("sleep", baby.state);		
 		baby.state = "sleep";
 	  }
   
@@ -296,24 +301,23 @@ function updateStates() {
 
 setInterval(automatic, 100)
 
-function automatic() {
-  babyActions.poop();
+function automatic() {  
 
   if (setup.gameState == "play") {
     timer += 100;
 	score.stateScore.incrementScore(baby.state);
-  }
-
-  baby.fussy.calcFussiness();
-  document.getElementsByClassName('hungry')[0].innerHTML = baby.hungry;
-  document.getElementsByClassName('uncomfortable')[0].innerHTML = baby.uncomfortable;
-  document.getElementsByClassName('rawFusiness')[0].innerHTML = baby.fussy.fussiness;
-  document.getElementsByClassName('dirtydiaper')[0].innerHTML = baby.pooped.dirtyDiaper;
-  document.getElementsByClassName('state')[0].innerHTML = baby.state;
-
-  if (setup.gameState == "play") {
-    setup.gameOver();
-  }
+	setup.gameOver();
+	babyActions.poop();
+	baby.fussy.calcFussiness();
+    document.getElementsByClassName('hungry')[0].innerHTML = baby.hungry;
+    document.getElementsByClassName('uncomfortable')[0].innerHTML = baby.uncomfortable;
+    document.getElementsByClassName('rawFussiness')[0].innerHTML = baby.fussy.fussiness;
+    document.getElementsByClassName('dirtydiaper')[0].innerHTML = baby.pooped.dirtyDiaper;
+    document.getElementsByClassName('state')[0].innerHTML = baby.state;
+    document.getElementsByClassName('feed-counter')[0].innerHTML = parentActions.feedCounter;
+    document.getElementsByClassName('rock-counter')[0].innerHTML = parentActions.rockCounter;
+  }  
+  
 }
 
 var score = {
@@ -332,20 +336,12 @@ var score = {
 		  this.score += 5;
           score.displayScore();
 		  break;
-		case "cry":
-		  if(score.calcScore() >= 5){
-		    this.score -= 5;
-            score.displayScore();
-		  }
+		case "cry":		
 		  break;
-		case "wail":
-		  if(score.calcScore() >= 10){
-		    this.score -= 10;
-            score.displayScore();
-		  }
+		case "wail":		 
 		  break;
 		case "sleep":		  
-		    this.score += 50;
+		    this.score += 100;
             score.displayScore();		 
 		  break;
 		default:		
@@ -372,14 +368,14 @@ var score = {
           score.displayScore();
           break;
         case "cry":
-          if(score.calcScore() >= 200){
-		    this.score -= 200;
+          if(score.calcScore() >= 100){
+		    this.score -= 100;
             score.displayScore();
 		   }
           break;
         case "wail":
-          if(score.calcScore() >= 1000){
-		    this.score -= 1000;
+          if(score.calcScore() >= 500){
+		    this.score -= 500;
             score.displayScore();
 		   }
           break;
