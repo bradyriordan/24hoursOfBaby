@@ -11,7 +11,7 @@ var setup = {
   gameTime: 60000,
   updateHunger: 2500,
   updateTired: 2500,
-  updateUncomfortable: 2500,
+  updateUncomfortable: 2500,  
   startGame: function () {
     this.gameState = "play"
     document.getElementsByClassName('container__start')[0].style.display = "none";
@@ -73,30 +73,35 @@ var baby = {
             if (this.fussiness <= 10 && this.fussiness >= 2) {
               this.fussiness -=2
               score.fussy.incrementScore("smile");
+			  scoreAnimation.animate("smile");
             }
             break;
           case "content":
             if (this.fussiness <= 10 && this.fussiness >= 1) {
               this.fussiness--
               score.fussy.incrementScore("content");
+			  scoreAnimation.animate("content");
             }
             break;
           case "cry":
             if (this.fussiness < 10) {
               this.fussiness++
               score.fussy.incrementScore("cry");
+			  scoreAnimation.animate("cry");
             }
             break;
           case "wail":
             if (this.fussiness < 10 && currentState != "wail") {
               this.fussiness++
               score.fussy.incrementScore("wail");
+			  scoreAnimation.animate("wail");
             }
             break;
           case "sleep":
             if (this.fussiness <= 10 && this.fussiness >= 2) {
               this.fussiness -= 2
               score.fussy.incrementScore("sleep");
+			  scoreAnimation.animate("sleep");
             }
             break;
           default:
@@ -157,21 +162,14 @@ var babyActions = {
       score.sleep.incrementScore();
     }
   },
-  poop: function (increment) {
-    if (increment == 'feed') {
+  poop: function (increment) {    
       if (baby.pooped.poopTimerTimestamp == 0) {
         baby.pooped.poopTimerTimestamp = timer;
       }
       if (baby.pooped.poopTimer() > 10000) {
         baby.pooped.dirtyDiaper = true;
         baby.pooped.poopTimerTimestamp = timer;
-      }
-    } else {
-      if (baby.pooped.poopTimer() > 10000) {
-        baby.pooped.dirtyDiaper = true
-        baby.pooped.poopTimerTimestamp = timer;
-      }
-    }
+      }     
   }
 }
 
@@ -237,7 +235,7 @@ var parentActions = {
 
   change: function () {
     if (baby.pooped.dirtyDiaper == true) {
-      baby.pooped.dirtyDiaper = false;
+      baby.pooped.dirtyDiaper = false;	  
       babyActions.sleep();
     }
   }
@@ -280,18 +278,17 @@ setInterval(updateStates, 100, baby.state);
 
 function updateStates(state) {
   if(setup.gameState == "play"){
-    if (baby.hungry == 5 || baby.uncomfortable == 5 || baby.pooped.dirtyDiaper == true && state != "wail" ) {
-    babyState.wail();
+    if (baby.hungry == 2 || baby.uncomfortable == 2) {
+    babyState.smile();
   } else if (baby.hungry == 4 || baby.uncomfortable == 4 && state != "cry") {
     babyState.cry();
   } else if (baby.hungry == 3 || baby.uncomfortable == 3 && state != "content") {
     babyState.content();
-  } else if (baby.hungry == 2 || baby.uncomfortable == 2 && state != "smile") {
-    babyState.smile();
+  } else if (baby.hungry == 5 || baby.uncomfortable == 5 || baby.pooped.dirtyDiaper == true && state != "wail" ) {
+    babyState.wail();
   } else {
-    babyState.smile();
+    //
   }
-
   
    timer += 100;
    score.stateScore.incrementScore(baby.state);
@@ -309,6 +306,42 @@ function updateStates(state) {
   }
 }
 
+var scoreAnimation = {
+    animateAllStates: function() {
+	  document.getElementById("scoreAnimation").classList.toggle("container__score-animation-hidden");
+      setTimeout(function(){ 
+        document.getElementById("scoreAnimation").classList.toggle("container__score-animation-hidden");
+      }, 500);	
+	},
+	animate: function(state){
+	
+	switch (state){
+	    case "smile":
+		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+1000</span>";
+		  this.animateAllStates();
+		  break;
+	    case "content":
+		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+300</span>";
+		  this.animateAllStates();
+		  break;
+		case "cry":	
+		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:1.5em;\">-300</span>";;
+		  this.animateAllStates();
+		  break;
+		case "wail":
+		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:1.5em;\">-500</span>";;
+		  this.animateAllStates();
+		  break;
+		case "sleep":
+		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+1000</span>";;
+		  this.animateAllStates();
+		  break;
+		default:		
+	}
+	
+	  
+	}
+}
 
 var score = {
   calcScore: function () {

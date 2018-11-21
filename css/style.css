@@ -171,3 +171,15 @@ body{
 .container__text--gameover{
 	display: block;
 }
+
+.container__score-animation-hidden{  
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 0.5s, opacity 0.5s linear;
+}
+
+.container__score-animation-visible{  
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 2s linear;
+}
