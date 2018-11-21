@@ -180,11 +180,9 @@ var parentActions = {
 	this.feedCounter = 0;
 	this.rockCounter = 0;
   },
-  feed: function (counter) {
-    if (baby.hungry <= 6 && baby.hungry > 0) {
-      if (counter == baby.fussy.fussiness || counter == 10) {
-        this.feedActions();
-      }
+  feed: function () {
+    if (baby.hungry <= 6 && baby.hungry > 0) {      
+      this.feedActions();      
     }
 
   },
@@ -197,12 +195,13 @@ var parentActions = {
   },
   feedCounter: 0,
   toFeed: function () {
-    if (this.feedCounter < 10) {
-      this.feedCounter++
-      this.feed(this.feedCounter);
-    } else if (this.feedCounter == 10) {
-      this.feed(this.feedCounter);
-    }
+    if (this.feedCounter == baby.fussy.fussiness) {
+      this.feed();
+    } else if (this.feedCounter != baby.fussy.fussiness && this.feedCounter != 10){
+      this.feedCounter++;
+    } else {
+	  this.feed();
+	}
   },
   lastFedTimestamp: 0,
   lastFed: function () {
@@ -211,10 +210,8 @@ var parentActions = {
 
 
   rock: function (counter) {
-    if (baby.uncomfortable <= 6 && baby.uncomfortable > 0) {
-      if (counter == baby.fussy.fussiness || counter == 10) {
-        this.rockActions();
-      }
+    if (baby.uncomfortable <= 6 && baby.uncomfortable > 0) {      
+      this.rockActions();      
     }
   },
   rockActions: function () {
@@ -225,12 +222,13 @@ var parentActions = {
   },
   rockCounter: 0,
   toRock: function () {
-    if (this.rockCounter < 10) {
-      this.rockCounter++
-        this.rock(this.rockCounter);
-    } else if (this.rockCounter == 10) {
-      this.rock(this.rockCounter);
-    }
+    if (this.rockCounter == baby.fussy.fussiness) {
+      this.rock();
+    } else if (this.rockCounter != baby.fussy.fussiness && this.rockCounter != 10){
+      this.rockCounter++;
+    } else {
+	  this.rock();
+	}
   },
   lastRockedTimestamp: 0,
   lastRocked: function () {
@@ -278,47 +276,39 @@ var babyState = {
 }
 
 
-setInterval(updateStates, 100);
+setInterval(updateStates, 100, baby.state);
 
-function updateStates() {
+function updateStates(state) {
   if(setup.gameState == "play"){
-  if (baby.pooped.dirtyDiaper == true) {
+    if (baby.hungry == 5 || baby.uncomfortable == 5 || baby.pooped.dirtyDiaper == true && state != "wail" ) {
     babyState.wail();
-  } else if (baby.hungry == 5 || baby.uncomfortable == 5) {
-    babyState.wail();
-  } else if (baby.hungry == 4 || baby.uncomfortable == 4) {
+  } else if (baby.hungry == 4 || baby.uncomfortable == 4 && state != "cry") {
     babyState.cry();
-  } else if (baby.hungry == 3 || baby.uncomfortable == 3) {
+  } else if (baby.hungry == 3 || baby.uncomfortable == 3 && state != "content") {
     babyState.content();
-  } else if (baby.hungry == 2 || baby.uncomfortable == 2) {
+  } else if (baby.hungry == 2 || baby.uncomfortable == 2 && state != "smile") {
     babyState.smile();
   } else {
-    //
+    babyState.smile();
   }
-  }
-}
 
-
-setInterval(automatic, 100)
-
-function automatic() {  
-
-  if (setup.gameState == "play") {
-    timer += 100;
-	score.stateScore.incrementScore(baby.state);
-	setup.gameOver();
-	babyActions.poop();
-	baby.fussy.calcFussiness();
-    document.getElementsByClassName('hungry')[0].innerHTML = baby.hungry;
-    document.getElementsByClassName('uncomfortable')[0].innerHTML = baby.uncomfortable;
-    document.getElementsByClassName('rawFussiness')[0].innerHTML = baby.fussy.fussiness;
-    document.getElementsByClassName('dirtydiaper')[0].innerHTML = baby.pooped.dirtyDiaper;
-    document.getElementsByClassName('state')[0].innerHTML = baby.state;
-    document.getElementsByClassName('feed-counter')[0].innerHTML = parentActions.feedCounter;
-    document.getElementsByClassName('rock-counter')[0].innerHTML = parentActions.rockCounter;
-  }  
   
+   timer += 100;
+   score.stateScore.incrementScore(baby.state);
+   setup.gameOver();
+   babyActions.poop();
+   baby.fussy.calcFussiness();
+   document.getElementsByClassName('hungry')[0].innerHTML = baby.hungry;
+   document.getElementsByClassName('uncomfortable')[0].innerHTML = baby.uncomfortable;
+   document.getElementsByClassName('rawFussiness')[0].innerHTML = baby.fussy.fussiness;
+   document.getElementsByClassName('dirtydiaper')[0].innerHTML = baby.pooped.dirtyDiaper;
+   document.getElementsByClassName('state')[0].innerHTML = baby.state;
+   document.getElementsByClassName('feed-counter')[0].innerHTML = parentActions.feedCounter;
+   document.getElementsByClassName('rock-counter')[0].innerHTML = parentActions.rockCounter;
+  
+  }
 }
+
 
 var score = {
   calcScore: function () {

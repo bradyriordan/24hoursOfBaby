@@ -9,7 +9,7 @@ function xAPIlaunched(parentName) {
   //define the xapi statement being sent  
   var statement = {
     "actor": {
-      "mbox": "mailto:24hoursofbaby@"+ parentName +".com",
+      "mbox": "mailto:24hoursofbaby@"+ parentName.split(" ").join("") +".com",
       "name": parentName,
       "objectType": "Agent"
     },
@@ -41,7 +41,7 @@ function xAPIcompleted(parentName, rawScore) {
   //define the xapi statement being sent  
   var statement = {
   "actor": {
-      "mbox": "mailto:24hoursofbaby@"+ parentName +".com",
+      "mbox": "mailto:24hoursofbaby@"+ parentName.split(" ").join("") +".com",
       "name": parentName,
       "objectType": "Agent"
     },
