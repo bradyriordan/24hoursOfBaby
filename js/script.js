@@ -70,21 +70,21 @@ var baby = {
 		}
         switch (state) {
           case "smile":
-            if (this.fussiness <= 10 && this.fussiness >= 2) {
+            if (this.fussiness <= 10 && this.fussiness >= 2 && currentState != "smile") {
               this.fussiness -=2
               score.fussy.incrementScore("smile");
 			  scoreAnimation.animate("smile");
             }
             break;
           case "content":
-            if (this.fussiness <= 10 && this.fussiness >= 1) {
+            if (this.fussiness <= 10 && this.fussiness >= 1 && currentState != "content") {
               this.fussiness--
               score.fussy.incrementScore("content");
 			  scoreAnimation.animate("content");
             }
             break;
           case "cry":
-            if (this.fussiness < 10) {
+            if (this.fussiness < 10 && currentState != "cry") {
               this.fussiness++
               score.fussy.incrementScore("cry");
 			  scoreAnimation.animate("cry");
@@ -98,7 +98,7 @@ var baby = {
             }
             break;
           case "sleep":
-            if (this.fussiness <= 10 && this.fussiness >= 2) {
+            if (this.fussiness <= 10 && this.fussiness >= 2 && currentState != "sleep") {
               this.fussiness -= 2
               score.fussy.incrementScore("sleep");
 			  scoreAnimation.animate("sleep");
@@ -274,22 +274,28 @@ var babyState = {
 }
 
 
-setInterval(updateStates, 100, baby.state);
+setInterval(updateStates, 100);
 
 function updateStates(state) {
-  if(setup.gameState == "play"){
-    if (baby.hungry == 2 || baby.uncomfortable == 2) {
-    babyState.smile();
-  } else if (baby.hungry == 4 || baby.uncomfortable == 4 && state != "cry") {
-    babyState.cry();
-  } else if (baby.hungry == 3 || baby.uncomfortable == 3 && state != "content") {
-    babyState.content();
-  } else if (baby.hungry == 5 || baby.uncomfortable == 5 || baby.pooped.dirtyDiaper == true && state != "wail" ) {
-    babyState.wail();
-  } else {
-    //
-  }
   
+  if(setup.gameState == "play"){      
+    
+	
+	if (baby.hungry == 5 || baby.uncomfortable == 5 || baby.pooped.dirtyDiaper == true) {
+      babyState.wail();
+    } else if (baby.hungry == 4 || baby.uncomfortable == 4) {
+      babyState.cry();
+    } else if (baby.hungry == 3 || baby.uncomfortable == 3) {
+      babyState.content();
+    } else if (baby.hungry <= 2 || baby.uncomfortable <= 2) {    
+	  babyState.smile();	
+    } else {
+       //
+    }
+	
+    	
+  
+   babyActions.sleep();
    timer += 100;
    score.stateScore.incrementScore(baby.state);
    setup.gameOver();
