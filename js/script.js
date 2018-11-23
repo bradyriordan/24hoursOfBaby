@@ -160,7 +160,13 @@ var babyActions = {
       baby.state = "sleep";
       baby.slept.lastSleptTimeStamp = timer;
       score.sleep.incrementScore();
-    }
+    } else if (baby.state == "sleep") {
+	  if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 2000 && baby.slept.lastSlept() < 10000 && baby.pooped.dirtyDiaper == false){
+	    return true;
+	  } else {
+	    whichState();
+	  }
+	}
   },
   poop: function (increment) {    
       if (baby.pooped.poopTimerTimestamp == 0) {
@@ -274,6 +280,22 @@ var babyState = {
 }
 
 
+
+function whichState(){
+   
+   if (baby.hungry == 5 || baby.uncomfortable == 5 || baby.pooped.dirtyDiaper == true) {
+      babyState.wail();
+    } else if (baby.hungry == 4 || baby.uncomfortable == 4) {
+      babyState.cry();
+    } else if (baby.hungry == 3 || baby.uncomfortable == 3) {
+      babyState.content();
+    } else if (baby.hungry <= 2 || baby.uncomfortable <= 2) {    
+	  babyState.smile();	
+    } else {
+       //
+    }
+}
+
 setInterval(updateStates, 100);
 
 function updateStates(state) {
@@ -281,6 +303,7 @@ function updateStates(state) {
   if(setup.gameState == "play"){      
     
 	
+	if(baby.state != "sleep"){
 	if (baby.hungry == 5 || baby.uncomfortable == 5 || baby.pooped.dirtyDiaper == true) {
       babyState.wail();
     } else if (baby.hungry == 4 || baby.uncomfortable == 4) {
@@ -292,6 +315,8 @@ function updateStates(state) {
     } else {
        //
     }
+	}
+	
 	
     	
   
@@ -339,7 +364,7 @@ var scoreAnimation = {
 		  this.animateAllStates();
 		  break;
 		case "sleep":
-		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+1000</span>";;
+		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+2000</span>";;
 		  this.animateAllStates();
 		  break;
 		default:		
@@ -409,7 +434,7 @@ var score = {
 		   }
           break;
         case "sleep":
-          this.score += 1000;
+          this.score += 2000;
           score.displayScore();
           break;
         default:
