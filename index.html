@@ -70,11 +70,16 @@
 	</svg>
 	<!-- End Clock SVG -->
 	<div class="container__score-animation-hidden" id="scoreAnimation"></div>
-    <img class="container__baby-img" id="baby-img" src="img/baby/wail.gif" width="auto" height="auto" alt="baby"/><br>
+    
+	  
+	<img class="container__baby-img main" id="baby-img" src="img/baby/wail.gif" width="auto" height="auto" alt="baby"/><br>
+	
+	
+	
 	<img onclick="parentActions.toFeed()" id="bottle" class="container__accessories" src="img/accessories/bottle.png" width="auto" height="120px" alt="bottle"/>		
 	<img onclick="parentActions.toRock()" id="soother" class="container__accessories" src="img/accessories/soother.png" width="auto" height="90px" alt="soother"/>
 	<img onclick="parentActions.change()" id="diaper" class="container__accessories" src="img/accessories/diaper.png" width="auto" height="90px" alt="diaper"/>	
-
+	
 	<div class="container__start-finish">	  
 	    <h1 class="container__game-over-text">Game over, <span class="container__game-over-text-span"></span>!</h1>
 		<button class="container__start-finish-button" onclick="setup.restart();">Restart</button>
