@@ -8,7 +8,7 @@ var timer = 0;
 
 var setup = {
   gameState: "pause",
-  gameTime: 60000,
+  gameTime: 600000,
   updateHunger: 2500,
   updateTired: 2500,
   updateUncomfortable: 2500,
@@ -38,6 +38,7 @@ var setup = {
    
   startGame: function () {
     this.gameState = "play"
+	baby.fussy.calcFussiness();
     document.getElementsByClassName('container__start')[0].style.display = "none";
     baby.parentName = document.getElementById("username").value;
     xAPIlaunched(baby.parentName);
@@ -52,7 +53,7 @@ var setup = {
   },
   restart: function () {
     this.gameState = "play"
-    baby.fussy.calcFussiness("restart");
+    baby.fussy.calcFussiness();
     timer = 0;
     baby.hungry = 5;
     baby.tired = 5;
@@ -81,15 +82,11 @@ var baby = {
     fussiness: 0,
     calcFussiness: function (source) {
       f = Math.floor(Math.random() * (8 - 1 + 1)) + 1;
-      if (this.fussiness == 0) {
-        this.fussiness = f;
-      } else if (source == "restart") {
-        this.fussiness = f;
-      }
+      this.fussiness = f;      
     },
     updateFussiness: function (state, currentState) {
       if (currentState != state) {
-	    if(currentState == "wail" && state == "cry"){
+	    if(currentState == "wail" && state == "cry" && this.fussiness >= 2){
 			this.fussiness -=2
 		}
         switch (state) {
@@ -179,7 +176,7 @@ function updateUncomfortable() {
 
 var babyActions = {  
   sleep: function () {
-    if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 2000 && baby.slept.lastSlept() > 10000 && baby.pooped.dirtyDiaper == false && baby.state != "sleep") {
+    if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 2000 && baby.slept.lastSlept() > 15000 && baby.pooped.dirtyDiaper == false && baby.state != "sleep") {
       babyState.sleep();
       baby.state = "sleep";
       baby.slept.lastSleptTimeStamp = timer;      
@@ -356,14 +353,12 @@ function updateStates(state) {
    timer += 100;
    score.stateScore.incrementScore(baby.state);
    setup.gameOver();
-   babyActions.poop();
-   baby.fussy.calcFussiness();
-   document.getElementsByClassName('hungry')[0].innerHTML = baby.hungry;
-   document.getElementsByClassName('uncomfortable')[0].innerHTML = baby.uncomfortable;
-   document.getElementsByClassName('rawFussiness')[0].innerHTML = baby.fussy.fussiness;
-   document.getElementsByClassName('dirtydiaper')[0].innerHTML = baby.pooped.dirtyDiaper;   
-   document.getElementsByClassName('feed-counter')[0].innerHTML = parentActions.feedCounter;
-   document.getElementsByClassName('rock-counter')[0].innerHTML = parentActions.rockCounter;
+   babyActions.poop();   
+   document.getElementsByClassName("container__hungry_score_inner")[0].style.width = baby.hungry * 20 + "%"   
+   document.getElementsByClassName("container__uncomfortable_score_inner")[0].style.width = baby.uncomfortable * 20 + "%"
+   document.getElementsByClassName("container__score_middle_inner")[0].style.width = baby.fussy.fussiness * 10 + "%"
+   
+   document.getElementsByClassName('rawFussiness')[0].innerHTML = baby.fussy.fussiness; 
   
   }
 }

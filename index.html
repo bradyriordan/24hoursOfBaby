@@ -26,18 +26,31 @@
 	  <button class="container__start-finish-button" onclick="setup.startGame();">Start!</button>
 	  </div>
 	</div>
-	<div class="container__score--main">
-	  <h3 class="container__text">Score: <span class="sleep-score">0</span>&nbsp;|</h3>		  
-	  <div class="hungry-progress-container">
-	  <h3 class="container__text">Hungry: <span class="hungry">0</span>&nbsp;|</h3>
-	  <div class="hungry-progress-inner">
+	<div class="container__score--main">	  		  
+	 
+	 <div class="container__hungry_outer">	 
+	  <div class="container__hungry_score_outer">		    
+		<h3 class="container__text">Hungry</h3>
+		<div class="container__hungry_score_inner"></div>
+	  </div>	  
+	 </div>
+	 
+	  <div class="container__score_score_middle_outer">	 
+	    <div class="container__score_middle_outer">
+	      <h3 class="container__text"><span class="sleep-score">0</span>&nbsp;</h3><br>
+	      <h3 class="container__text">Fussiness</h3>
+		  <div class="container__score_middle_inner"></div>
+	    </div>
 	  </div>
-	  </div>
-	  <h3 class="container__text">Fussiness: <span class="rawFussiness">0</span>&nbsp;|</h3>	
-	  <h3 class="container__text">Uncomfortable: <span class="uncomfortable">0</span>&nbsp;|</h3>
-	  <h3 class="container__text">Dirty Diaper: <span class="dirtydiaper"></span>&nbsp;|</h3>	 
-	  <h3 class="container__text">Feed Counter: <span class="feed-counter"></span>&nbsp;|</h3>
-	  <h3 class="container__text">Rock Counter: <span class="rock-counter"></span>&nbsp;</h3>  
+	  
+	  <div class="container__uncomfortable_outer">
+	    <div class="container__uncomfortable_score_outer">
+		  <h3 class="container__text">Uncomfortable</h3>
+		  <div class="container__uncomfortable_score_inner"></div>
+		</div> 	 
+	   </div>
+	   
+	   <div style="clear:both;"></div>
 	</div>
 	<!-- Clock SVG -->
 	<svg class="container__clock" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -76,8 +89,7 @@
     
 	  
 	<img class="container__baby-img main" id="baby-img" src="img/baby/wail.gif" width="auto" height="auto" alt="baby"/><br>
-	
-	
+
 	
 	<img onclick="parentActions.toFeed()" id="bottle" class="container__accessories" src="img/accessories/bottle.png" width="auto" height="120px" alt="bottle"/>		
 	<img onclick="parentActions.toRock()" id="soother" class="container__accessories" src="img/accessories/soother.png" width="auto" height="90px" alt="soother"/>

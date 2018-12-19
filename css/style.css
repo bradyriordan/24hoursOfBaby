@@ -74,13 +74,35 @@ body{
   background-color: #f15f3b;
 }
 
-.container__score--main{
-	display: inline;
+.container__score--main{	
     margin: 0 auto;
 	padding: 20px 15px 10px 15px;
 	background-color: #f4876c;
 	color: white;
 	border-radius: 0px 0px 10px 10px;
+	width: fit-content;
+}
+
+.container__hungry_outer{
+	float:left;
+	width:200px;
+}
+
+.container__score_middle_outer{
+	float:left;
+	padding: 0px 20px 0px 20px;
+	width:200px;
+}
+
+.container__uncomfortable_outer{
+	float:right;
+	width:200px;
+}
+
+.container__uncomfortable_score_inner, .container__hungry_score_inner, .container__score_middle_inner{
+	height:20px;
+	width: 30%;
+	background-color:white;
 }
 
 .container__text{	
