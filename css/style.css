@@ -184,3 +184,15 @@ body{
   transition: opacity 2s linear;
 }
 
+.hungry-progress-container{
+	display:inline;
+	width:100%;
+}
+
+.hungry-progress-inner{
+	display:inline;
+	height:25px;
+	width:25%;
+	background-color:red;
+}
+
