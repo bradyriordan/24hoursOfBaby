@@ -18,7 +18,7 @@ var setup = {
 	  content: 300,
 	  cry: -100,
 	  wail: -500,
-	  sleep: 2000		
+	  sleep: 2000
 	},
 	state: {
 	  smile: 10,
@@ -30,22 +30,22 @@ var setup = {
   },
   fussiness: {
     smile: -2,
-	content: -1,
-	cry: 1,
-	wail: 1,
-	sleep: -2	
-  },	  
-   
+	  content: -1,
+	  cry: 1,
+	  wail: 1,
+	  sleep: -2
+  },
+
   startGame: function () {
     this.gameState = "play"
-	baby.fussy.calcFussiness();
+	  baby.fussy.calcFussiness();
     document.getElementsByClassName('container__start')[0].style.display = "none";
     baby.parentName = document.getElementById("username").value;
     xAPIlaunched(baby.parentName);
   },
   gameOver: function () {
     if (timer > this.gameTime) {
-      document.getElementsByClassName('container__start-finish')[0].style.display = "block";
+    document.getElementsByClassName('container__start-finish')[0].style.display = "block";
 	  xAPIcompleted(baby.parentName, score.calcScore());
 	  showLeaderBoard(baby.parentName, score.calcScore());
       this.gameState = "stop"
@@ -64,14 +64,14 @@ var setup = {
     baby.slept.lastSleptTimeStamp = 0;
     baby.pooped.dirtyDiaper = false;
     baby.pooped.poopTimerTimestamp = 0;
-    score.resetScore();	
-	xAPIlaunched(baby.parentName);
+    score.resetScore();
+	  xAPIlaunched(baby.parentName);
     document.getElementsByClassName('container__start-finish')[0].style.display = "none";
-	table = document.getElementsByClassName('container__table-high-score')[0];	
-	var rows = table.rows;
+	  table = document.getElementsByClassName('container__table-high-score')[0];
+	  var rows = table.rows;
     var i = rows.length;
     while (--i) {
-      rows[i].parentNode.removeChild(rows[i]);     
+    rows[i].parentNode.removeChild(rows[i]);
     }
     }
 }
@@ -82,47 +82,47 @@ var baby = {
     fussiness: 0,
     calcFussiness: function (source) {
       f = Math.floor(Math.random() * (8 - 1 + 1)) + 1;
-      this.fussiness = f;      
+      this.fussiness = f;
     },
     updateFussiness: function (state, currentState) {
       if (currentState != state) {
-	    if(currentState == "wail" && state == "cry" && this.fussiness >= 2){
+	    if(currentState == "wail" && state == "cry" && this.fussiness >= 3){
 			this.fussiness -=2
 		}
         switch (state) {
           case "smile":
-            if (this.fussiness <= 10 && this.fussiness >= 2 && currentState != "smile") {
+            if (this.fussiness <= 10 && this.fussiness >= 3 && currentState != "smile") {
               this.fussiness += setup.fussiness.smile;
               score.fussy.incrementScore("smile");
-			  scoreAnimation.animate("smile");
+			        scoreAnimation.animate("smile");
             }
             break;
           case "content":
-            if (this.fussiness <= 10 && this.fussiness >= 1 && currentState != "content") {
+            if (this.fussiness <= 10 && this.fussiness >= 2 && currentState != "content") {
               this.fussiness += setup.fussiness.content;
               score.fussy.incrementScore("content");
-			  scoreAnimation.animate("content");
+			        scoreAnimation.animate("content");
             }
             break;
           case "cry":
             if (this.fussiness < 10 && currentState != "cry") {
               this.fussiness += setup.fussiness.cry;
               score.fussy.incrementScore("cry");
-			  scoreAnimation.animate("cry");
+			        scoreAnimation.animate("cry");
             }
             break;
           case "wail":
             if (this.fussiness < 10 && currentState != "wail") {
               this.fussiness += setup.fussiness.wail;
               score.fussy.incrementScore("wail");
-			  scoreAnimation.animate("wail");
+			        scoreAnimation.animate("wail");
             }
             break;
           case "sleep":
-            if (this.fussiness <= 10 && this.fussiness >= 2 && currentState != "sleep") {
+            if (this.fussiness <= 10 && this.fussiness >= 3 && currentState != "sleep") {
               this.fussiness += setup.fussiness.sleep;
               score.fussy.incrementScore("sleep");
-			  scoreAnimation.animate("sleep");
+			        scoreAnimation.animate("sleep");
             }
             break;
           default:
@@ -174,12 +174,12 @@ function updateUncomfortable() {
 }
 
 
-var babyActions = {  
+var babyActions = {
   sleep: function () {
     if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 3000 && baby.slept.lastSlept() > 15000 && baby.pooped.dirtyDiaper == false && baby.state != "sleep") {
       babyState.sleep();
       baby.state = "sleep";
-      baby.slept.lastSleptTimeStamp = timer;      
+      baby.slept.lastSleptTimeStamp = timer;
     } else if (baby.state == "sleep") {
 	  if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 3000 && baby.slept.lastSlept() < 15000 && baby.pooped.dirtyDiaper == false){
 	    return true;
@@ -188,14 +188,14 @@ var babyActions = {
 	  }
 	}
   },
-  poop: function (increment) {    
+  poop: function (increment) {
       if (baby.pooped.poopTimerTimestamp == 0) {
         baby.pooped.poopTimerTimestamp = timer;
       }
       if (baby.pooped.poopTimer() > 10000) {
         baby.pooped.dirtyDiaper = true;
         baby.pooped.poopTimerTimestamp = timer;
-      }     
+      }
   }
 }
 
@@ -205,8 +205,8 @@ var parentActions = {
 	this.rockCounter = 0;
   },
   feed: function () {
-    if (baby.hungry <= 6 && baby.hungry > 0) {      
-      this.feedActions();      
+    if (baby.hungry <= 6 && baby.hungry > 0) {
+      this.feedActions();
     }
 
   },
@@ -234,8 +234,8 @@ var parentActions = {
 
 
   rock: function (counter) {
-    if (baby.uncomfortable <= 6 && baby.uncomfortable > 0) {      
-      this.rockActions();      
+    if (baby.uncomfortable <= 6 && baby.uncomfortable > 0) {
+      this.rockActions();
     }
   },
   rockActions: function () {
@@ -261,7 +261,7 @@ var parentActions = {
 
   change: function () {
     if (baby.pooped.dirtyDiaper == true) {
-      baby.pooped.dirtyDiaper = false;	  
+      baby.pooped.dirtyDiaper = false;
       babyActions.sleep();
     }
   }
@@ -269,7 +269,7 @@ var parentActions = {
 
 
 var babyState = {
-  
+
 	  smile: function () {
 		document.getElementById('baby-img').setAttribute("src", "img/baby/smile.png");
 		baby.fussy.updateFussiness("smile", baby.state);
@@ -297,28 +297,28 @@ var babyState = {
 	  sleep: function () {
 		document.getElementById('baby-img').setAttribute("src", "img/baby/sleep.gif");
 		parentActions.clearCounters();
-		baby.fussy.updateFussiness("sleep", baby.state);		
+		baby.fussy.updateFussiness("sleep", baby.state);
 		baby.state = "sleep";
 	  }
-  
+
 }
 
 
 
 function whichState(){
-   
+
 	if (baby.hungry == 5 || baby.uncomfortable == 5 || baby.pooped.dirtyDiaper == true) {
         if(baby.pooped.dirtyDiaper == true && baby.state != "wail-pooped"){
 		  babyState.wailPooped();
-	    } else if (baby.state != "wail" && baby.pooped.dirtyDiaper == false) {		
-		  babyState.wail();	
-	    }	  
+	    } else if (baby.state != "wail" && baby.pooped.dirtyDiaper == false) {
+		  babyState.wail();
+	    }
     } else if (baby.hungry == 4 || baby.uncomfortable == 4 && baby.state != "cry") {
       babyState.cry();
     } else if (baby.hungry == 3 || baby.uncomfortable == 3 ) {
       babyState.content();
-    } else if (baby.hungry <= 2 || baby.uncomfortable <= 2 ) {    
-	  babyState.smile();	
+    } else if (baby.hungry <= 2 || baby.uncomfortable <= 2 ) {
+	  babyState.smile();
     } else {
        baby.state = baby.state;
     }
@@ -327,49 +327,49 @@ function whichState(){
 setInterval(updateStates, 100);
 
 function updateStates(state) {
-  
-  if(setup.gameState == "play"){    
-	
+
+  if(setup.gameState == "play"){
+
 	if(baby.state != "sleep"){
 	if (baby.hungry == 5 || baby.uncomfortable == 5 || baby.pooped.dirtyDiaper == true) {
         if(baby.pooped.dirtyDiaper == true && baby.state != "wail-pooped"){
 		  babyState.wailPooped();
-	    } else if (baby.state != "wail" && baby.pooped.dirtyDiaper == false) {		
-		  babyState.wail();	
-	    }	  
+	    } else if (baby.state != "wail" && baby.pooped.dirtyDiaper == false) {
+		  babyState.wail();
+	    }
     } else if (baby.hungry == 4 || baby.uncomfortable == 4 && baby.state != "cry") {
       babyState.cry();
     } else if (baby.hungry == 3 || baby.uncomfortable == 3 ) {
       babyState.content();
-    } else if (baby.hungry <= 2 || baby.uncomfortable <= 2 ) {    
-	  babyState.smile();	
+    } else if (baby.hungry <= 2 || baby.uncomfortable <= 2 ) {
+	  babyState.smile();
     } else {
        baby.state = baby.state;
     }
-	
-  }    	
-  
+
+  }
+
    babyActions.sleep();
    timer += 100;
    score.stateScore.incrementScore(baby.state);
    setup.gameOver();
-   babyActions.poop();   
-   document.getElementsByClassName("container__hungry_score_inner")[0].style.width = baby.hungry * 20 + "%"   
+   babyActions.poop();
+   document.getElementsByClassName("container__hungry_score_inner")[0].style.width = baby.hungry * 20 + "%"
    document.getElementsByClassName("container__uncomfortable_score_inner")[0].style.width = baby.uncomfortable * 20 + "%"
-   document.getElementsByClassName("container__score_middle_inner")[0].style.width = baby.fussy.fussiness * 10 + "%"  
-  
+   document.getElementsByClassName("container__score_middle_inner")[0].style.width = baby.fussy.fussiness * 10 + "%"
+
   }
 }
 
 var scoreAnimation = {
     animateAllStates: function() {
 	  document.getElementById("scoreAnimation").classList.toggle("container__score-animation-hidden");
-      setTimeout(function(){ 
+      setTimeout(function(){
         document.getElementById("scoreAnimation").classList.toggle("container__score-animation-hidden");
-      }, 500);	
+      }, 500);
 	},
 	animate: function(state){
-	
+
 	switch (state){
 	    case "smile":
 		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+" + setup.score.stateChange.smile + "</span>";
@@ -379,7 +379,7 @@ var scoreAnimation = {
 		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+" + setup.score.stateChange.content + "</span>";
 		  this.animateAllStates();
 		  break;
-		case "cry":	
+		case "cry":
 		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:1.5em;\">" + setup.score.stateChange.cry + "</span>";
 		  this.animateAllStates();
 		  break;
@@ -391,10 +391,10 @@ var scoreAnimation = {
 		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+" + setup.score.stateChange.sleep + "</span>";
 		  this.animateAllStates();
 		  break;
-		default:		
+		default:
 	}
-	
-	  
+
+
 	}
 }
 
@@ -414,18 +414,18 @@ var score = {
 		  this.score += setup.score.state.content;
           score.displayScore();
 		  break;
-		case "cry":		
+		case "cry":
 		  break;
-		case "wail":		 
+		case "wail":
 		  break;
-		case "sleep":		  
+		case "sleep":
 		    this.score += setup.score.state.sleep;
-            score.displayScore();		 
+            score.displayScore();
 		  break;
-		default:		
-	  }	  
+		default:
+	  }
 	}
-  },  
+  },
   fussy: {
     score: 0,
     incrementScore: function (state) {
