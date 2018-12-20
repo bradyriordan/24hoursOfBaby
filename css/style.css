@@ -80,7 +80,8 @@ body{
 	background-color: #f4876c;
 	color: white;
 	border-radius: 0px 0px 10px 10px;
-	width: fit-content;
+	/*width: fit-content;*/
+	display:table;
 }
 
 .container__hungry_outer{
@@ -88,7 +89,7 @@ body{
 	width:200px;
 }
 
-.container__score_middle_outer{
+.container__score_score_middle_outer{
 	float:left;
 	padding: 0px 20px 0px 20px;
 	width:200px;
@@ -108,6 +109,10 @@ body{
 .container__text{	
   font-size: 1.5em;
   display:inline;
+}
+
+.sleep-score{
+	font-size:2em;
 }
   
 .container__text--game-time{
