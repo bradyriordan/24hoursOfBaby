@@ -223,3 +223,22 @@ body{
 	background-color:red;
 }
 
+@media only screen and (max-width: 600px) {
+  .container__clock {
+    display:none;
+  }
+  
+  .container__hungry_outer, .container__score_score_middle_outer, .container__uncomfortable_outer{
+	  width:100%;
+	  padding: 5px 0px 5px 0px;	  
+  }
+  
+  .container__score--main{
+	  padding: 5px 15px 5px 15px;
+  }
+  
+  .container__text{
+	  font-size: 1em;
+  }
+}
+

@@ -8,7 +8,7 @@ var timer = 0;
 
 var setup = {
   gameState: "pause",
-  gameTime: 600000,
+  gameTime: 60000,
   updateHunger: 2500,
   updateTired: 2500,
   updateUncomfortable: 2500,
@@ -176,12 +176,12 @@ function updateUncomfortable() {
 
 var babyActions = {  
   sleep: function () {
-    if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 2000 && baby.slept.lastSlept() > 15000 && baby.pooped.dirtyDiaper == false && baby.state != "sleep") {
+    if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 3000 && baby.slept.lastSlept() > 15000 && baby.pooped.dirtyDiaper == false && baby.state != "sleep") {
       babyState.sleep();
       baby.state = "sleep";
       baby.slept.lastSleptTimeStamp = timer;      
     } else if (baby.state == "sleep") {
-	  if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 2000 && baby.slept.lastSlept() < 10000 && baby.pooped.dirtyDiaper == false){
+	  if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 3000 && baby.slept.lastSlept() < 15000 && baby.pooped.dirtyDiaper == false){
 	    return true;
 	  } else {
 	    whichState();
@@ -356,9 +356,7 @@ function updateStates(state) {
    babyActions.poop();   
    document.getElementsByClassName("container__hungry_score_inner")[0].style.width = baby.hungry * 20 + "%"   
    document.getElementsByClassName("container__uncomfortable_score_inner")[0].style.width = baby.uncomfortable * 20 + "%"
-   document.getElementsByClassName("container__score_middle_inner")[0].style.width = baby.fussy.fussiness * 10 + "%"
-   
-   document.getElementsByClassName('rawFussiness')[0].innerHTML = baby.fussy.fussiness; 
+   document.getElementsByClassName("container__score_middle_inner")[0].style.width = baby.fussy.fussiness * 10 + "%"  
   
   }
 }
