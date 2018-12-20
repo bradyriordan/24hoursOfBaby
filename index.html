@@ -17,19 +17,6 @@
 	<script src="js/script.js" type="text/javascript"></script>
 	<script src="js/anime.js" type="text/javascript"></script>
 	<script src="js/animation.js" type="text/javascript"></script>
-  <script>
-
-  //prevent zoom on iOS 10+  
-  var lastTouchEnd = 0;
-  document.addEventListener('touchend', function (event) {
-    var now = (new Date()).getTime();
-    if (now - lastTouchEnd <= 300) {
-    event.preventDefault();
-  }
-    lastTouchEnd = now;
-  }, false);
-
-  </script>
 
   </head>
 

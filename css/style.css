@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
 
 body{
-  background: url(../img/accessories/Background.svg) no-repeat center center fixed; 
+  background: url(../img/accessories/Background.svg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -12,16 +12,17 @@ body{
 }
 
 .container{
-  text-align: center;  
+  text-align: center;
 }
 
-.container__accessories{	
+.container__accessories{
   transition:transform .2s
+  touch-action: manipulation;
 }
 
 .container__accessories:hover {
   cursor: pointer;
-  transform: scale(1.1);  
+  transform: scale(1.1);
 }
 
 .container__start-finish{
@@ -32,7 +33,7 @@ body{
   width: 100%;
   height: 100vh;
   color: white;
-  background-color: #40b5cd;  
+  background-color: #40b5cd;
 }
 
 .container__table-high-score{
@@ -66,7 +67,7 @@ body{
   background-color: #f4876c;
   border: none;
   border-radius: 3px;
-  transition: 0.3s;  
+  transition: 0.3s;
 }
 
 .container__start-finish-button:hover{
@@ -74,7 +75,7 @@ body{
   background-color: #f15f3b;
 }
 
-.container__score--main{	
+.container__score--main{
     margin: 0 auto;
 	padding: 20px 15px 10px 15px;
 	background-color: #f4876c;
@@ -106,7 +107,7 @@ body{
 	background-color:white;
 }
 
-.container__text{	
+.container__text{
   font-size: 1.5em;
   display:inline;
 }
@@ -114,7 +115,7 @@ body{
 .sleep-score{
 	font-size:2em;
 }
-  
+
 .container__text--game-time{
 	display:none;
 }
@@ -128,7 +129,7 @@ body{
 
 .container__clock--minute{
   animation: minutehand 2.5s infinite;
-  -webkit-animation: minutehand 2.5s infinite;  
+  -webkit-animation: minutehand 2.5s infinite;
   transform-origin: 50% 50%;
   transition-timing-function: linear;
   -webkit-animation-timing-function: linear;
@@ -165,7 +166,7 @@ body{
 
 .container__clock--hour{
   animation: hourhand 30s infinite;
-  -webkit-animation: hourhand 30s infinite;  
+  -webkit-animation: hourhand 30s infinite;
   transform-origin: 50% 50%;
   transition-timing-function: linear;
   -webkit-animation-timing-function: linear;
@@ -191,7 +192,7 @@ body{
 	100% {transform: rotate(360deg); }
 }
 
-.container__game-over-text{	
+.container__game-over-text{
   font-size: 3em;
 }
 
@@ -199,13 +200,13 @@ body{
 	display: block;
 }
 
-.container__score-animation-hidden{  
+.container__score-animation-hidden{
   visibility: hidden;
   opacity: 0;
   transition: visibility 0s 0.5s, opacity 0.5s linear;
 }
 
-.container__score-animation-visible{  
+.container__score-animation-visible{
   visibility: visible;
   opacity: 1;
   transition: opacity 2s linear;
@@ -227,18 +228,17 @@ body{
   .container__clock {
     display:none;
   }
-  
+
   .container__hungry_outer, .container__score_score_middle_outer, .container__uncomfortable_outer{
 	  width:100%;
-	  padding: 5px 0px 5px 0px;	  
+	  padding: 5px 0px 5px 0px;
   }
-  
+
   .container__score--main{
 	  padding: 5px 15px 5px 15px;
   }
-  
+
   .container__text{
 	  font-size: 1em;
   }
 }
-
