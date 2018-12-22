@@ -15,17 +15,17 @@ var setup = {
   score: {
     stateChange: {
 	  smile: 1000,
-	  content: 300,
-	  cry: -100,
+	  content: 0,
+	  cry: 0,
 	  wail: -500,
 	  sleep: 2000
 	},
 	state: {
-	  smile: 10,
-	  content: 5,
+	  smile: 50,
+	  content: 10,
 	  cry: 0,
 	  wail: 0,
-	  sleep: 100
+	  sleep: 200
 	}
   },
   fussiness: {
@@ -101,14 +101,14 @@ var baby = {
             if (this.fussiness <= 10 && this.fussiness >= 2 && currentState != "content") {
               this.fussiness += setup.fussiness.content;
               score.fussy.incrementScore("content");
-			        scoreAnimation.animate("content");
+			        
             }
             break;
           case "cry":
             if (this.fussiness < 10 && currentState != "cry") {
               this.fussiness += setup.fussiness.cry;
               score.fussy.incrementScore("cry");
-			        scoreAnimation.animate("cry");
+			        
             }
             break;
           case "wail":
@@ -348,7 +348,8 @@ function updateStates(state) {
     }
 
   }
-
+   
+   scoreAnimation.animate(baby.state);
    babyActions.sleep();
    timer += 100;
    score.stateScore.incrementScore(baby.state);
@@ -372,23 +373,23 @@ var scoreAnimation = {
 
 	switch (state){
 	    case "smile":
-		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+" + setup.score.stateChange.smile + "</span>";
+		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+" + setup.score.state.smile + "</span>";
 		  this.animateAllStates();
 		  break;
 	    case "content":
-		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+" + setup.score.stateChange.content + "</span>";
+		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+" + setup.score.state.content + "</span>";
 		  this.animateAllStates();
 		  break;
-		case "cry":
-		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:1.5em;\">" + setup.score.stateChange.cry + "</span>";
-		  this.animateAllStates();
-		  break;
-		case "wail":
-		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:1.5em;\">" + setup.score.stateChange.wail +  "</span>";
-		  this.animateAllStates();
-		  break;
+		// case "cry":
+		  // document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:1.5em;\">" + setup.score.stateChange.cry + "</span>";
+		  // this.animateAllStates();
+		  // break;
+		// case "wail":
+		  // document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:1.5em;\">" + setup.score.stateChange.wail +  "</span>";
+		  // this.animateAllStates();
+		  // break;
 		case "sleep":
-		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+" + setup.score.stateChange.sleep + "</span>";
+		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+" + setup.score.state.sleep + "</span>";
 		  this.animateAllStates();
 		  break;
 		default:
