@@ -18,37 +18,44 @@ var setup = {
 	  content: 0,
 	  cry: 0,
 	  wail: -500,
-	  sleep: 2000
+	  sleep: 2000,
+	  barf: -2000
 	},
 	state: {
 	  smile: 50,
 	  content: 10,
 	  cry: 0,
 	  wail: 0,
-	  sleep: 200
+	  sleep: 200,
+	  barf: 0
+	},
+	bonus: {
+	  quickChange: 2000
 	}
   },
   fussiness: {
     smile: -2,
-	  content: -1,
-	  cry: 1,
-	  wail: 1,
-	  sleep: -2
+	content: -1,
+	cry: 1,
+	wail: 1,
+	sleep: -2,
+	barf: 2
   },
 
   startGame: function () {
     this.gameState = "play"
-	  baby.fussy.calcFussiness();
+	baby.fussy.calcFussiness();
     document.getElementsByClassName('container__start')[0].style.display = "none";
     baby.parentName = document.getElementById("username").value;
     xAPIlaunched(baby.parentName);
   },
   gameOver: function () {
     if (timer > this.gameTime) {
-    document.getElementsByClassName('container__start-finish')[0].style.display = "block";
-	  xAPIcompleted(baby.parentName, score.calcScore());
-	  showLeaderBoard(baby.parentName, score.calcScore());
-      this.gameState = "stop"
+    this.gameState = "stop"
+	document.getElementsByClassName('container__start-finish')[0].style.display = "block";
+	xAPIcompleted(baby.parentName, score.calcScore());
+	showLeaderBoard(baby.parentName, score.calcScore());
+      
     }
   },
   restart: function () {
@@ -57,15 +64,16 @@ var setup = {
     timer = 0;
     baby.hungry = 5;
     baby.tired = 5;
-    baby.uncomfortable = 5;
+    baby.uncomfortable = 5;	
     parentActions.lastFedTimestamp = 0;
     parentActions.clearCounters();
     parentActions.lastRockedTimestamp = 0;
     baby.slept.lastSleptTimeStamp = 0;
+	baby.barfed.lastBarfedTimeStamp = 0;
     baby.pooped.dirtyDiaper = false;
     baby.pooped.poopTimerTimestamp = 0;
     score.resetScore();
-	  xAPIlaunched(baby.parentName);
+	xAPIlaunched(baby.parentName);
     document.getElementsByClassName('container__start-finish')[0].style.display = "none";
 	  table = document.getElementsByClassName('container__table-high-score')[0];
 	  var rows = table.rows;
@@ -85,7 +93,7 @@ var baby = {
       this.fussiness = f;
     },
     updateFussiness: function (state, currentState) {
-      if (currentState != state) {
+      if (currentState != state && !(currentState == "barf" && state == "smile")) {
 	    if(currentState == "wail" && state == "cry" && this.fussiness >= 3){
 			this.fussiness -=2
 		}
@@ -94,7 +102,7 @@ var baby = {
             if (this.fussiness <= 10 && this.fussiness >= 3 && currentState != "smile") {
               this.fussiness += setup.fussiness.smile;
               score.fussy.incrementScore("smile");
-			        scoreAnimation.animate("smile");
+			  scoreAnimation.animate("smile");
             }
             break;
           case "content":
@@ -107,22 +115,27 @@ var baby = {
           case "cry":
             if (this.fussiness < 10 && currentState != "cry") {
               this.fussiness += setup.fussiness.cry;
-              score.fussy.incrementScore("cry");
-			        
+              score.fussy.incrementScore("cry");			        
             }
             break;
           case "wail":
             if (this.fussiness < 10 && currentState != "wail") {
               this.fussiness += setup.fussiness.wail;
               score.fussy.incrementScore("wail");
-			        scoreAnimation.animate("wail");
+			  scoreAnimation.animate("wail");
             }
             break;
           case "sleep":
-            if (this.fussiness <= 10 && this.fussiness >= 3 && currentState != "sleep") {
-              this.fussiness += setup.fussiness.sleep;
-              score.fussy.incrementScore("sleep");
-			        scoreAnimation.animate("sleep");
+            score.fussy.incrementScore("sleep");
+			if (this.fussiness <= 10 && currentState != "sleep") {
+              this.fussiness += setup.fussiness.sleep;              
+			  scoreAnimation.animate("sleep");
+            }
+            break;
+		  case "barf":
+		    score.fussy.incrementScore("barf");
+            if (this.fussiness <= 10) {
+              this.fussiness += setup.fussiness.barf;              			  
             }
             break;
           default:
@@ -147,6 +160,12 @@ var baby = {
     poopTimer: function () {
       return timer - this.poopTimerTimestamp
     }
+  },
+  barfed: {
+	lastBarfedTimeStamp: 0,
+	lastBarfed: function(){
+	  return timer - this.lastBarfedTimeStamp;
+	}
   }
 
 }
@@ -192,11 +211,16 @@ var babyActions = {
       if (baby.pooped.poopTimerTimestamp == 0) {
         baby.pooped.poopTimerTimestamp = timer;
       }
-      if (baby.pooped.poopTimer() > 10000) {
+      if (baby.pooped.poopTimer() > 15000) {
         baby.pooped.dirtyDiaper = true;
         baby.pooped.poopTimerTimestamp = timer;
       }
-  }
+  },
+  barf: function(){
+	babyState.barf();
+    baby.state = "barf";
+	baby.barfed.lastBarfedTimeStamp = timer;	  
+  }  
 }
 
 var parentActions = {
@@ -219,11 +243,17 @@ var parentActions = {
   },
   feedCounter: 0,
   toFeed: function () {
-    if (this.feedCounter == baby.fussy.fussiness) {
+    if (this.feedCounter != baby.fussy.fussiness && this.feedCounter < 10 && baby.hungry != 0){
+	  if(gameModifers.currentModifier == "coffee"){
+		this.feedCounter += 2;
+	  } else {
+		this.feedCounter++;  
+	  }
+	} else if (baby.hungry == 0){
+	  babyActions.barf();
+	} else if (this.feedCounter >= baby.fussy.fussiness) {
       this.feed();
-    } else if (this.feedCounter != baby.fussy.fussiness && this.feedCounter != 10){
-      this.feedCounter++;
-    } else {
+	} else {
 	  this.feed();
 	}
   },
@@ -246,10 +276,12 @@ var parentActions = {
   },
   rockCounter: 0,
   toRock: function () {
-    if (this.rockCounter == baby.fussy.fussiness) {
-      this.rock();
-    } else if (this.rockCounter != baby.fussy.fussiness && this.rockCounter != 10){
+    if (this.rockCounter != baby.fussy.fussiness && this.rockCounter != 10){
       this.rockCounter++;
+	} else if (baby.uncomfortable == 0){
+	  babyActions.barf();
+	} else if (this.rockCounter == baby.fussy.fussiness) {
+      this.rock();
     } else {
 	  this.rock();
 	}
@@ -263,6 +295,10 @@ var parentActions = {
     if (baby.pooped.dirtyDiaper == true) {
       baby.pooped.dirtyDiaper = false;
       babyActions.sleep();
+	  if (baby.pooped.poopTimer() < 1000){
+	    score.bonusScore.quickChange();
+		scoreAnimation.animate("quickChange");
+	  }
     }
   }
 }
@@ -299,8 +335,78 @@ var babyState = {
 		parentActions.clearCounters();
 		baby.fussy.updateFussiness("sleep", baby.state);
 		baby.state = "sleep";
+	  },
+	  barf: function () {
+		document.getElementById('baby-img').setAttribute("src", "img/baby/barf.png");
+		parentActions.clearCounters();
+		baby.fussy.updateFussiness("barf", baby.state);
+		baby.state = "barf";
 	  }
 
+}
+
+var progressMeter = {
+	history: [],
+	updateHistory: function(fussiness){
+		if(this.history.length >= 50){
+		  this.history.pop();
+		  this.history.push(fussiness);
+		  this.getSuccess();
+		} else {
+		  this.history.push(fussiness);
+		}
+	},
+	getSuccess: function(){
+		if (this.history.includes(1)){
+			gameModifers.coffee.startCoffee();
+		}
+	}	
+}
+
+var gameModifers = {
+	currentModifier: "",
+	coffee: {
+		lastCoffeeTimeStamp: 0,
+		lastCoffee: function(){
+			return timer - this.lastSleptTimeStamp
+		},
+		startCoffee: function(){
+			if(this.lastCoffee > 10000 || this.lastCoffeeTimeStamp == 0){
+				this.initiateCoffee();
+			}
+		},
+		initiateCoffee: function(){
+			this.lastCoffeeTimeStamp = timer;
+			
+			win = document.getElementsByClassName("container")[0];
+			img = document.getElementsByClassName("container__coffee")[0];
+			img.style.display = "block";			
+			
+			var w = win.scrollWidth;
+			var h = win.scrollHeight;
+
+			setInterval(function() {
+			  new_l = Math.floor((Math.random() * w) + 1);
+			  new_t = Math.floor((Math.random() * h) + 1);  
+			  img.style.top = new_t + "px"; 
+			  img.style.left = new_l + "px";
+			  
+			}, 2000);
+
+			img.addEventListener("click", function(){
+			  img.style.display = "none";
+			  this.currentModifier = "coffee";
+			  setTimeout(
+                function() {
+				this.endCoffee();
+			  }, 8000);
+			});
+		},
+		endCoffee: function(){
+			this.currentModifier = "";
+		}
+	}
+	
 }
 
 
@@ -330,67 +436,69 @@ function updateStates(state) {
 
   if(setup.gameState == "play"){
 
-	if(baby.state != "sleep"){
-	if (baby.hungry == 5 || baby.uncomfortable == 5 || baby.pooped.dirtyDiaper == true) {
-        if(baby.pooped.dirtyDiaper == true && baby.state != "wail-pooped"){
-		  babyState.wailPooped();
-	    } else if (baby.state != "wail" && baby.pooped.dirtyDiaper == false) {
-		  babyState.wail();
-	    }
-    } else if (baby.hungry == 4 || baby.uncomfortable == 4 && baby.state != "cry") {
-      babyState.cry();
-    } else if (baby.hungry == 3 || baby.uncomfortable == 3 ) {
-      babyState.content();
-    } else if (baby.hungry <= 2 || baby.uncomfortable <= 2 ) {
-	  babyState.smile();
-    } else {
-       baby.state = baby.state;
-    }
-
+  if((baby.state != "sleep" && baby.state != "barf") || baby.barfed.lastBarfed() > 1500){
+	whichState();
   }
-   
-   scoreAnimation.animate(baby.state);
+  
+ 
    babyActions.sleep();
-   timer += 100;
-   score.stateScore.incrementScore(baby.state);
-   setup.gameOver();
    babyActions.poop();
+   progressMeter.updateHistory(baby.fussy.fussiness);
+   
+   score.stateScore.incrementScore(baby.state);   
    document.getElementsByClassName("container__hungry_score_inner")[0].style.width = baby.hungry * 20 + "%"
    document.getElementsByClassName("container__uncomfortable_score_inner")[0].style.width = baby.uncomfortable * 20 + "%"
    document.getElementsByClassName("container__score_middle_inner")[0].style.width = baby.fussy.fussiness * 10 + "%"
-
+   setup.gameOver();
+   timer += 100;
   }
 }
 
-var scoreAnimation = {
-    animateAllStates: function() {
-	  document.getElementById("scoreAnimation").classList.toggle("container__score-animation-hidden");
-      setTimeout(function(){
-        document.getElementById("scoreAnimation").classList.toggle("container__score-animation-hidden");
-      }, 500);
-	},
-	animate: function(state){
 
-	switch (state){
+setInterval(scoreAnimationTimer, 300);
+
+function scoreAnimationTimer(){
+	scoreAnimation.animate(baby.state);
+}
+
+var scoreAnimation = {
+    animateAll: function() {
+	  document.getElementById("scoreAnimation").classList.toggle("container__score-animation-hidden");
+      
+	  setTimeout(function(){
+        document.getElementById("scoreAnimation").classList.toggle("container__score-animation-hidden");
+      }, 150);
+	},
+	animate: function(type){
+
+	switch (type){
+		case "quickChange":
+		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:2em;\">+" + "Quick change! " + setup.score.bonus.quickChange + "</span>";
+		  this.animateAll();
+		  break;
+		//case "barf":
+		  //document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:2em;\">+" + "Barf! " + setup.score.stateChange.barf + "</span>";
+		  //this.animateAll();
+		  //break;		
 	    case "smile":
-		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+" + setup.score.state.smile + "</span>";
-		  this.animateAllStates();
+		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:2em;\">+" + setup.score.state.smile + "</span>";
+		  this.animateAll();
 		  break;
 	    case "content":
-		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+" + setup.score.state.content + "</span>";
-		  this.animateAllStates();
+		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:2em;\">+" + setup.score.state.content + "</span>";
+		  this.animateAll();
 		  break;
 		// case "cry":
-		  // document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:1.5em;\">" + setup.score.stateChange.cry + "</span>";
+		  // document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:2em;\">" + setup.score.stateChange.cry + "</span>";
 		  // this.animateAllStates();
 		  // break;
 		// case "wail":
-		  // document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:1.5em;\">" + setup.score.stateChange.wail +  "</span>";
+		  // document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:2em;\">" + setup.score.stateChange.wail +  "</span>";
 		  // this.animateAllStates();
 		  // break;
 		case "sleep":
-		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:1.5em;\">+" + setup.score.state.sleep + "</span>";
-		  this.animateAllStates();
+		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:2em;\">+" + setup.score.state.sleep + "</span>";
+		  this.animateAll();
 		  break;
 		default:
 	}
@@ -401,7 +509,14 @@ var scoreAnimation = {
 
 var score = {
   calcScore: function () {
-    return this.fussy.score + this.stateScore.score;
+    return this.fussy.score + this.stateScore.score + this.bonusScore.score;
+  },
+  bonusScore: {
+	score: 0, 
+	quickChange: function(){
+		this.score += setup.score.bonus.quickChange;
+		score.displayScore();
+	}
   },
   stateScore: {
 	score: 0,
@@ -455,6 +570,12 @@ var score = {
           this.score += setup.score.stateChange.sleep;
           score.displayScore();
           break;
+		case "barf":
+          this.score += setup.score.stateChange.barf;
+          score.displayScore();
+          break;
+		 
+		 
         default:
       }
     }
@@ -462,10 +583,11 @@ var score = {
   resetScore: function () {
     this.fussy.score = 0;
 	this.stateScore.score = 0;
+	this.bonusScore.score = 0;
     score.displayScore();
   },
   displayScore: function () {
-    document.getElementsByClassName('sleep-score')[0].innerHTML = this.fussy.score + this.stateScore.score;
-    document.getElementsByClassName('sleep-score')[1].innerHTML = this.fussy.score + this.stateScore.score;
+    document.getElementsByClassName('sleep-score')[0].innerHTML = this.calcScore();
+    document.getElementsByClassName('sleep-score')[1].innerHTML = this.calcScore();
   }
 }

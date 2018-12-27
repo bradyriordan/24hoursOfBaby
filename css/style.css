@@ -80,6 +80,19 @@ body{
   background-color: #f15f3b;
 }
 
+.container__coffee{
+	width: 100px;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	display: none;
+	transition: 2s ease;
+}
+
+.container__coffee:hover{
+	cursor:pointer
+}
+
 .container__score--main{
     margin: 0 auto;
 	padding: 20px 15px 10px 15px;
@@ -96,6 +109,7 @@ body{
 
 .container__baby-img{
 	width:auto;
+	padding-top: 20px;
 }
 
 .container__score_score_middle_outer{
@@ -113,6 +127,7 @@ body{
 	height:20px;
 	width: 30%;
 	background-color:white;
+	transition: ease 0.3s;
 }
 
 .container__text{
@@ -132,7 +147,7 @@ body{
   width: 250px;
   height: 250px;
   margin: 0 auto;
-  display: block;
+  display: none;
 }
 
 .container__clock--minute{
@@ -211,13 +226,13 @@ body{
 .container__score-animation-hidden{
   visibility: hidden;
   opacity: 0;
-  transition: visibility 0s 0.5s, opacity 0.5s linear;
+  transform: translateY(-90px);
+  transition: 0.3s;
 }
 
 .container__score-animation-visible{
   visibility: visible;
-  opacity: 1;
-  transition: opacity 2s linear;
+  opacity: 0.2s;  
 }
 
 .hungry-progress-container{
