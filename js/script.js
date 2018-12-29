@@ -52,10 +52,10 @@ var setup = {
   gameOver: function () {
     if (timer > this.gameTime) {
     this.gameState = "stop"
+	gameModifiers.coffee.endCoffee();
 	document.getElementsByClassName('container__start-finish')[0].style.display = "block";
 	xAPIcompleted(baby.parentName, score.calcScore());
-	showLeaderBoard(baby.parentName, score.calcScore());
-      
+	showLeaderBoard(baby.parentName, score.calcScore());    
     }
   },
   restart: function () {
@@ -72,6 +72,7 @@ var setup = {
 	baby.barfed.lastBarfedTimeStamp = 0;
     baby.pooped.dirtyDiaper = false;
     baby.pooped.poopTimerTimestamp = 0;
+	gameModifiers.coffee.lastCoffeeTimeStamp = 0;
     score.resetScore();
 	xAPIlaunched(baby.parentName);
     document.getElementsByClassName('container__start-finish')[0].style.display = "none";
@@ -113,13 +114,13 @@ var baby = {
             }
             break;
           case "cry":
-            if (this.fussiness < 10 && currentState != "cry") {
+            if (this.fussiness <= 9 && currentState != "cry") {
               this.fussiness += setup.fussiness.cry;
               score.fussy.incrementScore("cry");			        
             }
             break;
           case "wail":
-            if (this.fussiness < 10 && currentState != "wail") {
+            if (this.fussiness <= 9 && currentState != "wail") {
               this.fussiness += setup.fussiness.wail;
               score.fussy.incrementScore("wail");
 			  scoreAnimation.animate("wail");
@@ -134,8 +135,10 @@ var baby = {
             break;
 		  case "barf":
 		    score.fussy.incrementScore("barf");
-            if (this.fussiness <= 10) {
+            if (this.fussiness <= 8) {
               this.fussiness += setup.fussiness.barf;              			  
+            } else if (this.fussiness = 9) {
+              this.fussiness += 1;              			  
             }
             break;
           default:
@@ -243,19 +246,17 @@ var parentActions = {
   },
   feedCounter: 0,
   toFeed: function () {
-    if (this.feedCounter != baby.fussy.fussiness && this.feedCounter < 10 && baby.hungry != 0){
-	  if(gameModifers.currentModifier == "coffee"){
-		this.feedCounter += 2;
+    if (this.feedCounter >= baby.fussy.fussiness) {
+      this.feed();
+	} else if (this.feedCounter != baby.fussy.fussiness && this.feedCounter <= 10 && baby.hungry != 0){
+	  if(gameModifiers.currentModifier == "coffee"){
+		this.feedCounter += 4;
 	  } else {
 		this.feedCounter++;  
 	  }
 	} else if (baby.hungry == 0){
 	  babyActions.barf();
-	} else if (this.feedCounter >= baby.fussy.fussiness) {
-      this.feed();
-	} else {
-	  this.feed();
-	}
+	} 
   },
   lastFedTimestamp: 0,
   lastFed: function () {
@@ -276,14 +277,16 @@ var parentActions = {
   },
   rockCounter: 0,
   toRock: function () {
-    if (this.rockCounter != baby.fussy.fussiness && this.rockCounter != 10){
-      this.rockCounter++;
+    if (this.rockCounter >= baby.fussy.fussiness) {
+      this.rock();
+	} else if (this.rockCounter != baby.fussy.fussiness && this.rockCounter <= 10 && baby.uncomfortable != 0){
+	  if(gameModifiers.currentModifier == "coffee"){
+		this.rockCounter += 4;
+	  } else {
+		this.rockCounter++;  
+	  }
 	} else if (baby.uncomfortable == 0){
 	  babyActions.barf();
-	} else if (this.rockCounter == baby.fussy.fussiness) {
-      this.rock();
-    } else {
-	  this.rock();
 	}
   },
   lastRockedTimestamp: 0,
@@ -337,7 +340,7 @@ var babyState = {
 		baby.state = "sleep";
 	  },
 	  barf: function () {
-		document.getElementById('baby-img').setAttribute("src", "img/baby/barf.png");
+		document.getElementById('baby-img').setAttribute("src", "img/baby/barf.gif");
 		parentActions.clearCounters();
 		baby.fussy.updateFussiness("barf", baby.state);
 		baby.state = "barf";
@@ -350,33 +353,35 @@ var progressMeter = {
 	updateHistory: function(fussiness){
 		if(this.history.length >= 50){
 		  this.history.pop();
-		  this.history.push(fussiness);
+		  this.history.unshift(fussiness);
 		  this.getSuccess();
 		} else {
 		  this.history.push(fussiness);
 		}
 	},
 	getSuccess: function(){
-		if (this.history.includes(1)){
-			gameModifers.coffee.startCoffee();
+		result = this.history.filter(fussy => fussy >= 7 );
+		
+		if (result.length > 40){
+		  gameModifiers.coffee.startCoffee();
+		  result.length = 0;
 		}
 	}	
 }
 
-var gameModifers = {
+var gameModifiers = {
 	currentModifier: "",
 	coffee: {
 		lastCoffeeTimeStamp: 0,
 		lastCoffee: function(){
-			return timer - this.lastSleptTimeStamp
+			return timer - this.lastCoffeeTimeStamp
 		},
 		startCoffee: function(){
-			if(this.lastCoffee > 10000 || this.lastCoffeeTimeStamp == 0){
+			if(this.lastCoffee() > 15000 || this.lastCoffeeTimeStamp == 0){
 				this.initiateCoffee();
 			}
 		},
-		initiateCoffee: function(){
-			this.lastCoffeeTimeStamp = timer;
+		initiateCoffee: function(){				
 			
 			win = document.getElementsByClassName("container")[0];
 			img = document.getElementsByClassName("container__coffee")[0];
@@ -385,25 +390,30 @@ var gameModifers = {
 			var w = win.scrollWidth;
 			var h = win.scrollHeight;
 
-			setInterval(function() {
+			animation = setInterval(animationFunction, 2000);
+			
+			function animationFunction(){
 			  new_l = Math.floor((Math.random() * w) + 1);
 			  new_t = Math.floor((Math.random() * h) + 1);  
-			  img.style.top = new_t + "px"; 
-			  img.style.left = new_l + "px";
-			  
-			}, 2000);
+			  img.style.top = new_t - 75 + "px"; 
+			  img.style.left = new_l - 75 + "px";
+			}			
+			
+			this.lastCoffeeTimeStamp = timer;
 
 			img.addEventListener("click", function(){
 			  img.style.display = "none";
-			  this.currentModifier = "coffee";
+			  gameModifiers.currentModifier = "coffee";
 			  setTimeout(
                 function() {
-				this.endCoffee();
+				gameModifiers.coffee.endCoffee();
+				clearInterval(animation);
 			  }, 8000);
 			});
 		},
 		endCoffee: function(){
-			this.currentModifier = "";
+			gameModifiers.currentModifier = "";
+			document.getElementsByClassName("container__coffee")[0].style.display = "none";			
 		}
 	}
 	
@@ -419,11 +429,13 @@ function whichState(){
 	    } else if (baby.state != "wail" && baby.pooped.dirtyDiaper == false) {
 		  babyState.wail();
 	    }
-    } else if (baby.hungry == 4 || baby.uncomfortable == 4 && baby.state != "cry") {
+    } else if (baby.hungry == 4 || baby.uncomfortable == 4 ) {
       babyState.cry();
     } else if (baby.hungry == 3 || baby.uncomfortable == 3 ) {
       babyState.content();
-    } else if (baby.hungry <= 2 || baby.uncomfortable <= 2 ) {
+    } else if (baby.hungry == 2 || baby.uncomfortable == 2 ) {
+	  babyState.smile();
+    } else if (baby.hungry == 1 || baby.uncomfortable == 1 ) {
 	  babyState.smile();
     } else {
        baby.state = baby.state;
@@ -475,11 +487,7 @@ var scoreAnimation = {
 		case "quickChange":
 		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:2em;\">+" + "Quick change! " + setup.score.bonus.quickChange + "</span>";
 		  this.animateAll();
-		  break;
-		//case "barf":
-		  //document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:2em;\">+" + "Barf! " + setup.score.stateChange.barf + "</span>";
-		  //this.animateAll();
-		  //break;		
+		  break;				
 	    case "smile":
 		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:2em;\">+" + setup.score.state.smile + "</span>";
 		  this.animateAll();
@@ -487,15 +495,7 @@ var scoreAnimation = {
 	    case "content":
 		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:2em;\">+" + setup.score.state.content + "</span>";
 		  this.animateAll();
-		  break;
-		// case "cry":
-		  // document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:2em;\">" + setup.score.stateChange.cry + "</span>";
-		  // this.animateAllStates();
-		  // break;
-		// case "wail":
-		  // document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:red; font-size:2em;\">" + setup.score.stateChange.wail +  "</span>";
-		  // this.animateAllStates();
-		  // break;
+		  break;		
 		case "sleep":
 		  document.getElementById("scoreAnimation").innerHTML = "<span style=\"color:green; font-size:2em;\">+" + setup.score.state.sleep + "</span>";
 		  this.animateAll();
