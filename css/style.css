@@ -292,3 +292,9 @@ body{
     font-size: 1em;
     min-width: 300px;
 }
+
+.container__baby-img{
+	padding-top: 5px;
+}
+
+}

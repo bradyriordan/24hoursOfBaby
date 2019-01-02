@@ -128,7 +128,7 @@ var baby = {
             break;
           case "sleep":
             score.fussy.incrementScore("sleep");
-			if (this.fussiness <= 10 && currentState != "sleep") {
+			if (this.fussiness <= 10 && this.fussiness >= 3 && currentState != "sleep") {
               this.fussiness += setup.fussiness.sleep;              
 			  scoreAnimation.animate("sleep");
             }
@@ -198,12 +198,12 @@ function updateUncomfortable() {
 
 var babyActions = {
   sleep: function () {
-    if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 3000 && baby.slept.lastSlept() > 15000 && baby.pooped.dirtyDiaper == false && baby.state != "sleep") {
+    if (baby.uncomfortable < 2 && parentActions.lastRocked() < 3000 && baby.slept.lastSlept() > 15000 && baby.pooped.dirtyDiaper == false && baby.state != "sleep") {
       babyState.sleep();
       baby.state = "sleep";
       baby.slept.lastSleptTimeStamp = timer;
     } else if (baby.state == "sleep") {
-	  if (baby.uncomfortable < 2 && baby.hungry < 2 && parentActions.lastRocked() < 3000 && baby.slept.lastSlept() < 15000 && baby.pooped.dirtyDiaper == false){
+	  if (baby.uncomfortable < 2 && parentActions.lastRocked() < 3000 && baby.slept.lastSlept() < 8000 && baby.pooped.dirtyDiaper == false){
 	    return true;
 	  } else {
 	    whichState();
@@ -246,7 +246,9 @@ var parentActions = {
   },
   feedCounter: 0,
   toFeed: function () {
-    if (this.feedCounter >= baby.fussy.fussiness) {
+    if (baby.hungry == 0) {
+		babyActions.barf();
+	} else if (this.feedCounter >= baby.fussy.fussiness) {
       this.feed();
 	} else if (this.feedCounter != baby.fussy.fussiness && this.feedCounter <= 10 && baby.hungry != 0){
 	  if(gameModifiers.currentModifier == "coffee"){
@@ -254,8 +256,6 @@ var parentActions = {
 	  } else {
 		this.feedCounter++;  
 	  }
-	} else if (baby.hungry == 0){
-	  babyActions.barf();
 	} 
   },
   lastFedTimestamp: 0,
@@ -448,10 +448,13 @@ function updateStates(state) {
 
   if(setup.gameState == "play"){
 
-  if((baby.state != "sleep" && baby.state != "barf") || baby.barfed.lastBarfed() > 1500){
+  if(baby.state != "sleep" && baby.state != "barf"){
 	whichState();
   }
-  
+
+  if(baby.state == "barf" && baby.barfed.lastBarfed() > 1500){
+	  whichState();
+  }  
  
    babyActions.sleep();
    babyActions.poop();
