@@ -1,6 +1,6 @@
 var conf = {
-  "endpoint": "https://trial-lrs.yetanalytics.io/xapi/",
-  "auth": "Basic " + toBase64("495dd7fd0d382fc953a7395934c1fb9c:b35ced3cfc78a45da2ca50f1a090e958")
+  "endpoint": "https://cloud.scorm.com/lrs/F583XZFRS8/sandbox/",
+  "auth": "Basic " + toBase64("yJV2TEVZl38wzLDxXhw:AzvPZYLo3LsYe5O2UEc")
 };
 
 ADL.XAPIWrapper.changeConfig(conf);
@@ -9,7 +9,7 @@ function xAPIlaunched(parentName) {
   //define the xapi statement being sent  
   var statement = {
     "actor": {
-      "mbox": "mailto:24hoursofbaby@"+ parentName.split(" ").join("") +".com",
+      "mbox": "mailto:24hoursofbaby@" + parentName.split(" ").join("") + ".com",
       "name": parentName,
       "objectType": "Agent"
     },
@@ -40,19 +40,19 @@ function xAPIlaunched(parentName) {
 function xAPIcompleted(parentName, rawScore) {
   //define the xapi statement being sent  
   var statement = {
-  "actor": {
-      "mbox": "mailto:24hoursofbaby@"+ parentName.split(" ").join("") +".com",
+    "actor": {
+      "mbox": "mailto:24hoursofbaby@" + parentName.split(" ").join("") + ".com",
       "name": parentName,
       "objectType": "Agent"
     },
 
-  "verb": {
-    "id": "http://adlnet.gov/expapi/verbs/completed",
-    "display": {
-      "en-US": "completed"
-     }
-   },
-  "object": {
+    "verb": {
+      "id": "http://adlnet.gov/expapi/verbs/completed",
+      "display": {
+        "en-US": "completed"
+      }
+    },
+    "object": {
       "id": "http://24hoursofbaby.com/xapi/",
       "definition": {
         "name": {
@@ -63,17 +63,17 @@ function xAPIcompleted(parentName, rawScore) {
         }
       },
       "objectType": "Activity"
-    },  
-  "result": {
-     "score": {
-	   "raw": rawScore
-	 },
-	 "completion": true		
-  }  
-   
- }; //end statement definition
- 
+    },
+    "result": {
+      "score": {
+        "raw": rawScore
+      },
+      "completion": true
+    }
+
+  }; //end statement definition
+
   // Dispatch the statement to the LRS  
   var result = ADL.XAPIWrapper.sendStatement(statement);
-} 
+}
 
