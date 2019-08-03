@@ -8,7 +8,7 @@ var timer = 0;
 
 var setup = {
   gameState: "pause",
-  gameTime: 60000,
+  gameTime: 20000,
   updateHunger: 2500,
   updateTired: 2500,
   updateUncomfortable: 2500,
@@ -370,53 +370,69 @@ var progressMeter = {
 }
 
 var gameModifiers = {
-  currentModifier: "",
-  coffee: {
-    lastCoffeeTimeStamp: 0,
-    lastCoffee: function () {
-      return timer - this.lastCoffeeTimeStamp
-    },
-    startCoffee: function () {
-      if (this.lastCoffee() > 15000 || this.lastCoffeeTimeStamp == 0) {
-        this.initiateCoffee();
-      }
-    },
-    initiateCoffee: function () {
-
-      win = document.getElementsByClassName("container")[0];
-      img = document.getElementsByClassName("container__coffee")[0];
-      img.style.display = "block";
-
-      var w = win.scrollWidth;
-      var h = win.scrollHeight;
-
-      animation = setInterval(animationFunction, 2000);
-
-      function animationFunction() {
-        new_l = Math.floor((Math.random() * w) + 1);
-        new_t = Math.floor((Math.random() * h) + 1);
-        img.style.top = new_t - 75 + "px";
-        img.style.left = new_l - 75 + "px";
-      }
-
-      this.lastCoffeeTimeStamp = timer;
-
-      img.addEventListener("click", function () {
-        img.style.display = "none";
+	currentModifier: "",
+	coffee: {
+		lastCoffeeTimeStamp: 0,		
+		lastCoffee: function(){
+			return timer - this.lastCoffeeTimeStamp
+		},
+		startCoffee: function(){
+			if((this.lastCoffee() > 15000 || this.lastCoffeeTimeStamp == 0) && gameModifiers.currentModifier != "coffee"){
         gameModifiers.currentModifier = "coffee";
-        setTimeout(
-          function () {
-            gameModifiers.coffee.endCoffee();
-            clearInterval(animation);
-          }, 8000);
-      });
+        console.log("coffee started");
+        this.initiateCoffee();
+			}
     },
-    endCoffee: function () {
-      gameModifiers.currentModifier = "";
-      document.getElementsByClassName("container__coffee")[0].style.display = "none";
-    }
-  }
+    animationInterval: function(){
+      t = setInterval(this.animationFunction, 2000);		
+    },
+    animationFunction: function(){      
+      var win = document.getElementsByClassName("container")[0];
+			var img = document.getElementsByClassName("container__coffee")[0];
+			img.style.display = "block";			
+			var width = win.scrollWidth;
+			var height = win.scrollHeight;        
+      new_l = Math.floor((Math.random() * width) + 1);
+      new_t = Math.floor((Math.random() * height) + 1);
+      img.style.top = new_t - 75 + "px";
+      img.style.left = new_l - 75 + "px";		
+    },
+    stopAnimation: function(){
+      var win = document.getElementsByClassName("container")[0];
+			var img = document.getElementsByClassName("container__coffee")[0];
+			img.style.display = "none";	      
+    },
+    initiateCoffee: function(){	
+      
+      this.animationInterval();      
+      this.animationFunction();
 
+			this.lastCoffeeTimeStamp = timer;
+
+      var img = document.getElementsByClassName("container__coffee")[0];
+
+			img.addEventListener("click", function(){        
+        img.style.display = "none";
+			  gameModifiers.currentModifier = "coffee";
+			  clearInterval(t);  
+			  setTimeout(
+          function() {
+            gameModifiers.coffee.endCoffee();
+			  }, 8000);
+			});
+		},
+		endCoffee: function(){
+			gameModifiers.currentModifier = "";
+      progressMeter.history = [];
+      clearInterval(t);       
+			document.getElementsByClassName("container__coffee")[0].style.display = "none";						
+		}
+	},
+	endModifiers: function(){     
+    this.coffee.endCoffee();
+		this.coffee.lastCoffeeTimeStamp = timer;
+	}
+	
 }
 
 
