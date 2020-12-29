@@ -12,7 +12,7 @@ https://bradyriordan.github.io/24hoursOfBaby/
 - Multiple baby states determine current score multiplier.
 - State-based game-modifier that decreases difficulty when a player needs help.
 - Bonus points for quick reaction times.
-- Scores from the last 30 days are persisted in a Learning Record Score and used to populate a leaderboard using the xAPI
+- Scores from the last 30 days are persisted in a Learning Record Score and used to populate a leaderboard using the xAPI.
 - Instruction page is shown before a game is started. A restart page is shown after a game is completed.
 - Configurable game settings allow developers to easily change game length and score settings.
 
