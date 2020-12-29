@@ -1,6 +1,6 @@
 # 24hoursOfBaby
 
-24 Hour of Baby is a JavaScript game built using vanilla JavaScript, HTML and CSS. It simulates taking care of an infant in the first few weeks after birth. Scores are persisted in a learning record score (LRS) and retreived using the xAPI to populate a leaderboard that compares a player's score with top scores from the last 30 days. 
+24 Hours of Baby is a JavaScript game built using vanilla JavaScript, HTML and CSS. It simulates taking care of an infant in the first few weeks after birth. Scores are persisted in a learning record score (LRS) and retreived using the xAPI to populate a leaderboard that compares a player's score with top scores from the last 30 days. 
 
 # Demo
 
