@@ -7,8 +7,8 @@ function showLeaderBoard(parentName, rawScore) {
   highScores = [];
 
   for (i = 0; i < scores.statements.length; i++) {
-    date = new Date(scores.statements[i].timestamp);
-    date = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
+    date = new Date(scores.statements[i].timestamp);    
+    date = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
     highScores.push([scores.statements[i].result.score.raw, scores.statements[i].actor.name, date]);
   }
 
