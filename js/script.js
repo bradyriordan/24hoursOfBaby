@@ -8,7 +8,7 @@ var timer = 0;
 
 var setup = {
   gameState: "pause",
-  gameTime: 60000,
+  gameTime: 6000,
   updateHunger: 2500,
   updateTired: 2500,
   updateUncomfortable: 2500,
@@ -384,7 +384,7 @@ var gameModifiers = {
 			}
     },
     animationInterval: function(){
-      t = setInterval(this.animationFunction, 2000);		
+      t = setInterval(this.animationFunction, 2000);
     },
     animationFunction: function(){      
       var win = document.getElementsByClassName("container")[0];
@@ -414,7 +414,7 @@ var gameModifiers = {
 			img.addEventListener("click", function(){        
         img.style.display = "none";
 			  gameModifiers.currentModifier = "coffee";
-			  if(t){clearInterval(t)}; 
+			  if(typeof t != 'undefined'){clearInterval(t)}; 
 			  setTimeout(
           function() {
             gameModifiers.coffee.endCoffee();
@@ -424,7 +424,7 @@ var gameModifiers = {
 		endCoffee: function(){
 			gameModifiers.currentModifier = "";
       progressMeter.history = [];
-      if(t){clearInterval(t)};     
+      if(typeof t != 'undefined'){clearInterval(t)};     
 			document.getElementsByClassName("container__coffee")[0].style.display = "none";						
 		}
 	},
