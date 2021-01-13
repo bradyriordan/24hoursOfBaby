@@ -414,7 +414,7 @@ var gameModifiers = {
 			img.addEventListener("click", function(){        
         img.style.display = "none";
 			  gameModifiers.currentModifier = "coffee";
-			  if(t){clearInterval(t)};  
+			  if(t){clearInterval(t)}; 
 			  setTimeout(
           function() {
             gameModifiers.coffee.endCoffee();
@@ -424,7 +424,7 @@ var gameModifiers = {
 		endCoffee: function(){
 			gameModifiers.currentModifier = "";
       progressMeter.history = [];
-      clearInterval(t);       
+      if(t){clearInterval(t)};     
 			document.getElementsByClassName("container__coffee")[0].style.display = "none";						
 		}
 	},
