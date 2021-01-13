@@ -414,7 +414,7 @@ var gameModifiers = {
 			img.addEventListener("click", function(){        
         img.style.display = "none";
 			  gameModifiers.currentModifier = "coffee";
-			  clearInterval(t);  
+			  if(t){clearInterval(t)};  
 			  setTimeout(
           function() {
             gameModifiers.coffee.endCoffee();
