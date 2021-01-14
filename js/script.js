@@ -8,7 +8,7 @@ var timer = 0;
 
 var setup = {
   gameState: "pause",
-  gameTime: 6000,
+  gameTime: 60000,
   updateHunger: 2500,
   updateTired: 2500,
   updateUncomfortable: 2500,

@@ -11,16 +11,11 @@ function showLeaderBoard(parentName, rawScore) {
     highScores.push([element.result.score.raw, element.actor.name, date]);    
   })
   
-  const sortedHighScores = highScores.slice().sort(sortFunction).reverse();
-
-  function sortFunction(a, b) {
-    if (a[0] === b[0]) {
-      return 0;
-    }
-    else {
-      return (a[0] < b[0]) ? -1 : 1;
-    }
-  }
+  const sortedHighScores = highScores.slice().sort((a,b) => {
+    if (a[0] === b[0]) { return 0 }
+    if (a[0] < b[0]) { return -1 }
+    if (b[0] < a[0]) { return 1 } 
+  }).reverse();
 
   table = document.getElementsByClassName('container__table-high-score-body')[0];
 
